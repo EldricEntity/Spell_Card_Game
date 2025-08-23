@@ -55,7 +55,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: left;
+    justify-content: center;
     margin-bottom: 25px;
 }
 
@@ -112,7 +112,7 @@ body {
 }
 
 .card-collection-panel,
-.built-deck-panel { /* This panel is not fully used yet, but styled */
+.built-deck-panel {
     background-color: #2b3b5b;
     padding: 20px;
     border-radius: 10px;
@@ -167,14 +167,72 @@ body {
     font-weight: 600;
 }
 
-.card-type {
+.card-description {
     font-size: 0.85em;
     color: #a8dadc;
+    min-height: 40px; /* Ensure consistent height for descriptions */
     margin-bottom: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.card-meta, .card-uses {
+    font-size: 0.8em;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.select-button,
+.use-button,
+.reset-button,
+.remove-button {
+    background-color: #e94560;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.select-button:hover,
+.use-button:hover {
+    background-color: #ff6b82;
+    transform: translateY(-2px);
+}
+
+.select-button:disabled,
+.use-button:disabled {
+    background-color: #5d4037; /* Muted red-brown for disabled */
+    cursor: not-allowed;
+    transform: none;
+}
+
+.reset-button {
+    background-color: #0f3460;
+}
+.reset-button:hover {
+    background-color: #1a51a1;
+    transform: translateY(-2px);
+}
+
+.remove-button {
+    background-color: #6d0a1b;
+}
+.remove-button:hover {
+    background-color: #920e26;
+    transform: translateY(-2px);
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
 
 .empty-message, .loading-message, .error-message {
     text-align: center;
@@ -244,5 +302,9 @@ body {
     .card-description {
         font-size: 0.8em;
         min-height: 35px;
+    }
+    .select-button, .use-button, .reset-button, .remove-button {
+        font-size: 0.85em;
+        padding: 6px 10px;
     }
 }

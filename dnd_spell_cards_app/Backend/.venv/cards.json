@@ -1,0 +1,65 @@
+[
+    {
+        "id": "c001",
+        "name": "Minor Illusion",
+        "image_filename": "minor_illusion.png",
+        "description": "Creates a sound or an image of an object within range.",
+        "type": "Cantrip",
+        "rarity": "Common",
+        "default_uses_per_rest": 2
+    },
+    {
+        "id": "c002",
+        "name": "Fire Bolt",
+        "image_filename": "fire_bolt.png",
+        "description": "Hurl a mote of fire at a creature or object.",
+        "type": "Cantrip",
+        "rarity": "Common",
+        "default_uses_per_rest": 2
+    },
+    {
+        "id": "l001",
+        "name": "Magic Missile",
+        "image_filename": "magic_missile.png",
+        "description": "Three glowing darts of magical force unerringly strike targets.",
+        "type": "Leveled Spell",
+        "rarity": "Common",
+        "default_uses_per_rest": 1
+    },
+    {
+        "id": "l002",
+        "name": "Shield",
+        "image_filename": "shield.png",
+        "description": "An invisible barrier of magical force appears and protects you.",
+        "type": "Leveled Spell",
+        "rarity": "Uncommon",
+        "default_uses_per_rest": 1
+    },
+    {
+        "id": "l003",
+        "name": "Misty Step",
+        "image_filename": "misty_step.png",
+        "description": "Teleport up to 30 feet to an unoccupied space you can see.",
+        "type": "Leveled Spell",
+        "rarity": "Rare",
+        "default_uses_per_rest": 1
+    },
+    {
+        "id": "l004",
+        "name": "Fireball",
+        "image_filename": "fireball.png",
+        "description": "A bright streak flashes from your finger to a point you choose, then blossoms into an explosion of flame.",
+        "type": "Leveled Spell",
+        "rarity": "Rare",
+        "default_uses_per_rest": 1
+    },
+    {
+        "id": "l005",
+        "name": "Wish",
+        "image_filename": "wish.png",
+        "description": "Grant the caster's deepest desires, but at a great personal cost.",
+        "type": "Leveled Spell",
+        "rarity": "Legendary",
+        "default_uses_per_rest": 1
+    }
+]

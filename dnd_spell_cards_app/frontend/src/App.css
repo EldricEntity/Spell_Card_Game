@@ -1,10 +1,10 @@
 /* dnd-spell-cards-app/frontend/src/App.css */
 
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Helvetia', sans-serif;
   margin: 0;
   padding: 20px;
-  background-color: #282c34;
+  background-color: #013f03;
   color: #e0e0e0;
   display: flex;
   justify-content: center;
@@ -12,7 +12,7 @@ body {
 }
 
 .app-container {
-  background-color: #383c4a;
+  background-color: #01031f;
   border-radius: 8px;
   padding: 25px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);

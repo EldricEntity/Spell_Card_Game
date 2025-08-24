@@ -1,0 +1,310 @@
+/* dnd-spell-cards-app/frontend/src/App.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: #1a1a2e; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.app-container {
+    background-color: #16213e; /* Slightly lighter dark container */
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    max-width: 1400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.app-title {
+    text-align: center;
+    color: #e94560; /* Accent color */
+    margin-bottom: 25px;
+    font-size: 2.5em;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+}
+
+.panel-title {
+    color: #0f3460; /* Darker accent */
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #0f3460;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(15, 52, 96, 0.3);
+}
+
+/* Character Stats Panel */
+.character-stats-panel {
+    background-color: #0f3460;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 100px; /* Ensure inputs have consistent width */
+}
+
+.input-group label {
+    font-size: 0.9em;
+    color: #a8dadc;
+    margin-bottom: 5px;
+}
+
+.input-group input[type="number"] {
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #e94560;
+    border-radius: 6px;
+    background-color: #2b3b5b;
+    color: #e0e0e0;
+    font-size: 1em;
+    text-align: center;
+    -moz-appearance: textfield; /* Firefox */
+}
+.input-group input[type="number"]::-webkit-outer-spin-button,
+.input-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.deck-summary {
+    width: 100%;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-top: 10px;
+}
+
+.highlight {
+    color: #e94560;
+    font-weight: 700;
+}
+
+.main-content {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 25px;
+}
+
+.card-collection-panel,
+.built-deck-panel {
+    background-color: #2b3b5b;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    flex: 1; /* Take equal space */
+    min-width: 300px; /* Minimum width before wrapping */
+}
+
+.card-list,
+.deck-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.card-item {
+    background-color: #1a1a2e;
+    border: 1px solid #0f3460;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    width: 180px; /* Fixed width for card items */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.card-image {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #e94560;
+    display: block; /* Ensures proper spacing */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.card-name {
+    color: #e94560;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.card-description {
+    font-size: 0.85em;
+    color: #a8dadc;
+    min-height: 40px; /* Ensure consistent height for descriptions */
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-meta, .card-uses {
+    font-size: 0.8em;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+}
+
+.select-button,
+.use-button,
+.reset-button,
+.remove-button {
+    background-color: #e94560;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.select-button:hover,
+.use-button:hover {
+    background-color: #ff6b82;
+    transform: translateY(-2px);
+}
+
+.select-button:disabled,
+.use-button:disabled {
+    background-color: #5d4037; /* Muted red-brown for disabled */
+    cursor: not-allowed;
+    transform: none;
+}
+
+.reset-button {
+    background-color: #0f3460;
+}
+.reset-button:hover {
+    background-color: #1a51a1;
+    transform: translateY(-2px);
+}
+
+.remove-button {
+    background-color: #6d0a1b;
+}
+.remove-button:hover {
+    background-color: #920e26;
+    transform: translateY(-2px);
+}
+
+.card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.empty-message, .loading-message, .error-message {
+    text-align: center;
+    font-size: 1.1em;
+    color: #a8dadc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #0f3460;
+    margin: 20px auto;
+    width: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.error-message {
+    color: #ff6b82;
+    background-color: #3d0505;
+    border: 1px solid #e94560;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .app-container {
+        padding: 20px;
+        gap: 20px;
+    }
+    .app-title {
+        font-size: 2em;
+    }
+    .panel-title {
+        font-size: 1.5em;
+    }
+    .main-content {
+        flex-direction: column;
+    }
+    .card-collection-panel,
+    .built-deck-panel {
+        min-width: unset;
+        width: 100%;
+    }
+    .character-stats-panel {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .app-container {
+        padding: 15px;
+    }
+    .app-title {
+        font-size: 1.8em;
+    }
+    .panel-title {
+        font-size: 1.3em;
+    }
+    .card-item {
+        width: 150px; /* Smaller cards on mobile */
+        padding: 10px;
+    }
+    .card-image {
+        width: 80px;
+        height: 120px;
+    }
+    .card-name {
+        font-size: 1em;
+    }
+    .card-description {
+        font-size: 0.8em;
+        min-height: 35px;
+    }
+    .select-button, .use-button, .reset-button, .remove-button {
+        font-size: 0.85em;
+        padding: 6px 10px;
+    }
+}

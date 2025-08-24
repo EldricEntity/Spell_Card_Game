@@ -67,21 +67,38 @@ def get_status():
 
 @app.route('/api/calculate_deck_size', methods=['POST'])
 def calculate_deck_size():
+ 
+  
     """Calculates the maximum deck size."""
     data = request.json
     character_level = data.get('character_level', 0)
     wis_mod = data.get('wis_mod', 0)
     int_mod = data.get('int_mod', 0)
     cha_mod = data.get('cha_mod', 0)
+    
+    
+    # Ensure all modifier values are capped at 20
+    wis_mod = min(wis_mod, 6)
+    int_mod = min(int_mod, 6)
+    cha_mod = min(cha_mod, 6)
+ 
 
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "
           f"Level: {character_level}, WIS: {wis_mod}, INT: {int_mod}, CHA: {cha_mod}")
+
+  
+
+   
+
+
+ 
 
     max_deck_size = int(character_level / 2) + int((wis_mod + int_mod + cha_mod) / 3)
     max_deck_size = max(0, max_deck_size)
 
     print(f"Calculated max deck size: {max_deck_size}")
     return jsonify({"max_deck_size": max_deck_size})
+
 
 @app.route('/api/card_used', methods=['POST'])
 def card_used():

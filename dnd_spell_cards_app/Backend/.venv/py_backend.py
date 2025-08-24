@@ -81,6 +81,7 @@ def calculate_deck_size():
     wis_mod = min(wis_mod, 6)
     int_mod = min(int_mod, 6)
     cha_mod = min(cha_mod, 6)
+    character_level = min(character_level, 20)
  
 
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "

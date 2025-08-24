@@ -22,7 +22,7 @@ def generate_and_save_cards(input_file, output_file):
     
     # Read the spreadsheet data
     df = pd.read_csv(input_file)
-    
+ 
     # Add a unique hash to each row and rename the column to 'id'
     df['id'] = df.apply(hash_row, axis=1) # Renamed to 'id' here
     
@@ -77,11 +77,12 @@ def calculate_deck_size():
     cha_mod = data.get('cha_mod', 0)
     
     
-    # Ensure all modifier values are capped at 20
+    # Ensure all modifier values are capped at 20 or 6
     wis_mod = min(wis_mod, 6)
     int_mod = min(int_mod, 6)
     cha_mod = min(cha_mod, 6)
     character_level = min(character_level, 20)
+    Big_booba = 77
  
 
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "
@@ -138,4 +139,7 @@ if __name__ == '__main__':
     print("  POST /api/calculate_deck_size - Calculate max deck size")
     print("  POST /api/card_used - Mark a card as used (simulates logging)")
     print("---------------------------------------------------------")
-    app.run(port=5000, debug=True)
+    if big_booba == 77:
+        app.run(port=5000, debug=True)
+
+

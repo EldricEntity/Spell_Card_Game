@@ -84,8 +84,8 @@ function App() {
         // If the deck is currently empty AND the card being added is NOT a Cantrip, prevent addition.
         const cantripCountInDeck = selectedCards.filter(c => c.type === 'Cantrip').length;
         if (card.type !== 'Cantrip' && cantripCountInDeck === 0 && selectedCards.length === 0) {
-             setError('Your deck must contain at least one Cantrip! Add a Cantrip first.');
-             return;
+            setError('Your deck must contain at least one Cantrip! Add a Cantrip first.');
+            return;
         }
 
         // Add the card to the deck. Assign a unique instance_id for tracking uses,
@@ -168,10 +168,6 @@ function App() {
         return <div className="app-container">Loading cards...</div>;
     }
 
-    if (error && !loading) { // Only show error if not loading anymore to avoid flickering
-        return <div className="error-message">{error}</div>;
-    }
-
     // --- Main Component Render ---
     return (
         <div className="app-container">
@@ -230,9 +226,9 @@ function App() {
                     <div className="card-list">
                         {allCards.map((card) => (
                             <div key={card.id} className="card-item available-card">
-                                {/* Placeholder image using card name. Replace with your actual PNGs */}
+                                {/* FIXED: More robust image source with optional chaining and fallback */}
                                 <img
-                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
+                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name?.split('.')[0]?.replace('_', '%20') || 'Card'}`}
                                     alt={card.name}
                                     className="card-image"
                                     onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
@@ -262,9 +258,9 @@ function App() {
                         ) : (
                             selectedCards.map((card) => (
                                 <div key={card.instance_id} className="card-item deck-card">
-                                    {/* Placeholder image. Replace with your actual PNGs */}
+                                    {/* FIXED: More robust image source with optional chaining and fallback */}
                                     <img
-                                        src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
+                                        src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name?.split('.')[0]?.replace('_', '%30') || 'Card'}`}
                                         alt={card.name}
                                         className="card-image"
                                         onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}

@@ -1,5 +1,5 @@
-Spell ID,Spell Name,Spell Type,Spell Description,Spell Rarity,BacklashDamage,Dealt Damage
-C001,Minor Illusion,Cantrip,Creates a sound or an image of an object within range.,Common,1 psychic,N/A
+Spell ID,name,type,description,rarity,BacklashDamage,Dealt Damage
+C001,Minor Illusion,Cantrip,Drive a Spike of Psychic energy into the mond of a creature,Common,1 psychic,N/A
 C002,Firebolt,Cantrip,Hurl a mote of fire at a creature or object.,Common,1d4 Fire,(1d10) - (2d10/lvl5) (3d10/lvl11) (4d10/lvl17) Fire
 C003,Acid Splash,Cantrip,Hurl a bubble of acid,Common,1d4 Acid,(1d6) - (2d6/lvl5) (3d6/lvl11) (4d6/lvl17) Acid
 C004,Blade Ward,Cantrip,Briefly reduce physical harm,Common,1 Force,N/A

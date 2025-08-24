@@ -227,8 +227,9 @@ function App() {
                         {allCards.map((card) => (
                             <div key={card.id} className="card-item available-card">
                                 {/* FIXED: More robust image source with optional chaining and fallback */}
+                             
                                 <img
-                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name?.split('.')[0]?.replace('_', '%20') || 'Card'}`}
+                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${encodeURIComponent(card.name)}`}
                                     alt={card.name}
                                     className="card-image"
                                     onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
@@ -260,11 +261,12 @@ function App() {
                                 <div key={card.instance_id} className="card-item deck-card">
                                     {/* FIXED: More robust image source with optional chaining and fallback */}
                                     <img
-                                        src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name?.split('.')[0]?.replace('_', '%30') || 'Card'}`}
+                                        src={`https://placehold.co/100x150/a8dadc/ffffff?text=${encodeURIComponent(card.name)}`}
                                         alt={card.name}
                                         className="card-image"
                                         onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
                                     />
+
                                     <h3 className="card-name">{card.name} ({card.type})</h3>
                                     <p className="card-description">{card.description}</p>
                                     <p className="card-uses">Uses Left: {card.current_uses}/{card.default_uses_per_rest}</p>

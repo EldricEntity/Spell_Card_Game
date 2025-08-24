@@ -23,11 +23,10 @@ def generate_and_save_cards(input_file, output_file):
     # Read the spreadsheet data
     df = pd.read_csv(input_file)
     
-    # Add a unique hash to each row
-    df['hash_id'] = df.apply(hash_row, axis=1)
+    # Add a unique hash to each row and rename the column to 'id'
+    df['id'] = df.apply(hash_row, axis=1) # Renamed to 'id' here
     
     # Convert the DataFrame to a list of dictionaries and save as JSON
-    # This correctly makes the data JSON serializable
     df.to_json(output_file, orient='records', indent=0)
     
     print(f"Successfully generated and saved card data to '{output_file}'.")

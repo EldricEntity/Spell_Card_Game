@@ -88,7 +88,6 @@ def calculate_deck_size():
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "
           f"Level: {character_level}, WIS: {wis_mod}, INT: {int_mod}, CHA: {cha_mod}")
 
-  
 
    
 

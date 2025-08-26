@@ -7,8 +7,8 @@ import os
 import datetime
 import oracledb
 import contextlib
-import pandas as pd  # NEW: Import for CSV handling
-import hashlib  # NEW: Import for hash_row function
+import pandas as pd
+import hashlib
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -23,15 +23,13 @@ DB_USERNAME = "ELDRIC"
 DB_PASSWORD = "StupidGame69"
 
 # --- CSV File Configuration (from collaborator's work) ---
-# IMPORTANT: Place your CSV file on the VM, e.g., in the project root.
-# Make sure the file exists at this path!
-CSV_FILE_PATH = '/home/opc/spell_card_app/Spell Trading Card Data.csv'  # Explicitly set the provided path
+CSV_FILE_PATH = '/home/opc/spell_card_app/Spell Trading Card Data.csv'
 
 # --- AGGRESSIVE DEBUGGING PRINTS ---
 print("\n--- Python Backend DB Config Debug ---")
 print(f"1. WALLET_DIR = '{WALLET_DIR}'")
 print(f"2. os.environ['TNS_ADMIN'] = '{os.environ.get('TNS_ADMIN')}'")
-print(f"3. CSV_FILE_PATH = '{CSV_FILE_PATH}'")  # Updated debug print for CSV path
+print(f"3. CSV_FILE_PATH = '{CSV_FILE_PATH}'")
 print(f"4. DB_SERVICE_NAME = '{DB_SERVICE_NAME}'")
 print(f"5. DB_USERNAME = '{DB_USERNAME}'")
 
@@ -145,9 +143,6 @@ def fetch_cards_from_csv():
         df = pd.read_csv(CSV_FILE_PATH)
 
         # Add a unique hash to each row and rename the column to 'id'
-        # This mirrors collaborator's approach for generating IDs
-        # Ensure 'id' column from CSV is kept or overwritten if needed for consistency.
-        # For this setup, we'll let hash_row generate a new ID, ensuring uniqueness.
         df['id'] = df.apply(hash_row, axis=1)
 
         # Convert DataFrame to a list of dictionaries (JSON-like format)
@@ -157,7 +152,6 @@ def fetch_cards_from_csv():
         validated_cards = []
         for row in csv_cards:
             try:
-                # Ensure all expected fields are present and correctly typed
                 card = {
                     "id": str(row['id']),
                     "name": str(row['name']),
@@ -166,7 +160,6 @@ def fetch_cards_from_csv():
                     "type": str(row['type']),
                     "rarity": str(row['rarity']),
                     "default_uses_per_rest": int(float(row['default_uses_per_rest']))
-                    # Convert to float first to handle potential decimals from CSV, then to int
                 }
                 validated_cards.append(card)
             except KeyError as ke:
@@ -185,7 +178,7 @@ def fetch_cards_from_csv():
 
 
 # --- Initialize Oracle DB Connection Pool (recommended for Flask) ---
-db_pool = None  # Initialize as None globally
+db_pool = None
 
 
 def init_db_pool():
@@ -196,19 +189,17 @@ def init_db_pool():
 
     print("Initializing Oracle DB connection pool...", flush=True)
     try:
-        # DEBUG: Confirm oracledb version and path just before create_pool
         print(f"DEBUG: oracledb module path (before create_pool): {oracledb.__file__}", flush=True)
         print(
             f"DEBUG: oracledb version loaded (before create_pool): {oracledb.__version__ if hasattr(oracledb, '__version__') else 'N/A'}",
             flush=True)
 
-        # Thin mode connection without explicit encoding/nencoding, as the driver is always UTF-8.
         db_pool = oracledb.create_pool(
             user=DB_USERNAME,
             password=DB_PASSWORD,
             dsn=DB_SERVICE_NAME,
             min=2, max=5, increment=1,
-            config_dir=WALLET_DIR  # Pass the wallet directory to the thin client
+            config_dir=WALLET_DIR
         )
         print("Oracle DB connection pool initialized successfully.", flush=True)
 
@@ -223,29 +214,28 @@ def init_db_pool():
             if not table_exists:
                 print("CARDS table not found. Creating table and populating with initial data.", flush=True)
                 cursor.execute("""
-                               CREATE TABLE CARDS
-                               (
-                                   id                    VARCHAR2(64) PRIMARY KEY, -- ID changed to VARCHAR2(64) to accommodate SHA-256 hash
-                                   name                  VARCHAR2(100) NOT NULL,
-                                   type                  VARCHAR2(50) NOT NULL,
-                                   description           VARCHAR2(500),
-                                   rarity                VARCHAR2(50),
-                                   default_uses_per_rest NUMBER,
-                                   image_filename        VARCHAR2(100)
-                               )
-                               """)
-                conn.commit()  # Commit DDL to make table available
-            else:  # If table exists, check ID column size if needed for hashes
+                    CREATE TABLE CARDS (
+                        id VARCHAR2(64) PRIMARY KEY,
+                        name VARCHAR2(100) NOT NULL,
+                        type VARCHAR2(50) NOT NULL,
+                        description VARCHAR2(500),
+                        rarity VARCHAR2(50),
+                        default_uses_per_rest NUMBER,
+                        image_filename VARCHAR2(100)
+                    )
+                """)
+                conn.commit()
+            else:
                 cursor.execute(
                     "SELECT DATA_LENGTH, CHAR_LENGTH FROM USER_TAB_COLUMNS WHERE TABLE_NAME = 'CARDS' AND COLUMN_NAME = 'ID'")
                 id_col_info = cursor.fetchone()
-                if id_col_info and id_col_info[1] < 64:  # Check CHAR_LENGTH for character-based size
+                if id_col_info and id_col_info[1] < 64:
                     print(
                         "WARNING: 'ID' column in CARDS table might be too small for SHA-256 hashes. Attempting to modify.",
                         flush=True)
                     try:
                         cursor.execute("ALTER TABLE CARDS MODIFY (id VARCHAR2(64))")
-                        conn.commit()  # Commit DDL change
+                        conn.commit()
                         print("'ID' column in CARDS table modified to VARCHAR2(64).", flush=True)
                     except oracledb.DatabaseError as e:
                         print(
@@ -256,17 +246,14 @@ def init_db_pool():
             cards_to_insert = fetch_cards_from_csv()
             if cards_to_insert:
                 print("Populating CARDS table from CSV file data.", flush=True)
-                # Use TRUNCATE TABLE instead of DELETE FROM to avoid ORA-12838
-                cursor.execute("TRUNCATE TABLE CARDS")  # TRUNCATE automatically commits
+                cursor.execute("TRUNCATE TABLE CARDS")
 
                 cursor.executemany("""
-                                   INSERT INTO CARDS (id, name, image_filename, description, type, rarity,
-                                                      default_uses_per_rest)
-                                   VALUES (:id, :name, :image_filename, :description, :type, :rarity,
-                                           :default_uses_per_rest)""",
+                    INSERT INTO CARDS (id, name, image_filename, description, type, rarity, default_uses_per_rest)
+                    VALUES (:id, :name, :image_filename, :description, :type, :rarity, :default_uses_per_rest)""",
                                    cards_to_insert
                                    )
-                conn.commit()  # Commit the new inserts
+                conn.commit()
                 print(f"CARDS table populated with {len(cards_to_insert)} cards from CSV file.", flush=True)
             else:
                 print(
@@ -277,10 +264,8 @@ def init_db_pool():
                 if card_count == 0:
                     print("CARDS table is empty. Populating with DEFAULT_CARDS.", flush=True)
                     cursor.executemany("""
-                                       INSERT INTO CARDS (id, name, image_filename, description, type, rarity,
-                                                          default_uses_per_rest)
-                                       VALUES (:id, :name, :image_filename, :description, :type, :rarity,
-                                               :default_uses_per_rest)""",
+                        INSERT INTO CARDS (id, name, image_filename, description, type, rarity, default_uses_per_rest)
+                        VALUES (:id, :name, :image_filename, :description, :type, :rarity, :default_uses_per_rest)""",
                                        DEFAULT_CARDS
                                        )
                     conn.commit()
@@ -294,21 +279,19 @@ def init_db_pool():
             if not player_decks_table_exists:
                 print("PLAYER_DECKS table not found. Creating table.", flush=True)
                 cursor.execute("""
-                               CREATE TABLE PLAYER_DECKS
-                               (
-                                   player_id       VARCHAR2(100) PRIMARY KEY,
-                                   deck_json       CLOB,
-                                   character_level NUMBER DEFAULT 1,
-                                   wis_mod         NUMBER DEFAULT 0,
-                                   int_mod         NUMBER DEFAULT 0,
-                                   cha_mod         NUMBER DEFAULT 0
-                               )
-                               """)
+                    CREATE TABLE PLAYER_DECKS (
+                        player_id VARCHAR2(100) PRIMARY KEY,
+                        deck_json CLOB,
+                        character_level NUMBER DEFAULT 1,
+                        wis_mod NUMBER DEFAULT 0,
+                        int_mod NUMBER DEFAULT 0,
+                        cha_mod NUMBER DEFAULT 0
+                    )
+                """)
                 conn.commit()
                 print("PLAYER_DECKS table created with character stats columns.", flush=True)
             else:
                 print("PLAYER_DECKS table already exists.", flush=True)
-                # Check if new columns exist, and add them if not (for existing tables)
                 existing_columns = [col[0] for col in cursor.execute(
                     "SELECT column_name FROM user_tab_columns WHERE table_name = 'PLAYER_DECKS'").fetchall()]
 
@@ -338,13 +321,13 @@ def init_db_pool():
 
     except oracledb.DatabaseError as e:
         error_obj, = e.args
-        if error_obj.code == 942:  # ORA-00942: table or view does not exist
+        if error_obj.code == 942:
             print(f"Error: Table check failed, likely tables don't exist: {error_obj.message}", flush=True)
-        elif error_obj.code == 955:  # ORA-00955: name is already used by an existing object
+        elif error_obj.code == 955:
             print(f"Warning: Table/column already exists. Skipping creation: {error_obj.message}", flush=True)
         else:
             print(f"Oracle DB Error during init: {error_obj.message}", flush=True)
-        raise  # Re-raise to prevent app from starting with bad DB connection
+        raise
     except Exception as e:
         print(f"Failed to initialize Oracle DB connection pool: {e}", flush=True)
         raise
@@ -380,15 +363,25 @@ def method_not_allowed(e):
 @app.route('/api/cards', methods=['GET'])
 def get_all_cards():
     """
-    Returns the list of all available spell cards from Oracle DB (now synced with CSV).
+    Returns the list of all available spell cards from Oracle DB, ordered by type then name.
     """
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 print(f"[{request.remote_addr}] GET /api/cards - Attempting to fetch all cards.")
 
-                cursor.execute(
-                    "SELECT id, name, image_filename, description, type, rarity, default_uses_per_rest FROM CARDS")
+                # The change is here: using a CASE statement for custom sorting
+                cursor.execute("""
+                    SELECT id, name, image_filename, description, type, rarity, default_uses_per_rest
+                    FROM CARDS
+                    ORDER BY 
+                        CASE
+                            WHEN type = 'Cantrip' THEN 1
+                            WHEN type = 'Leveled Spell' THEN 2
+                            ELSE 3
+                        END,
+                        name
+                """)
                 columns = [col[0].lower() for col in cursor.description]
                 all_cards = [dict(zip(columns, row)) for row in cursor]
                 print(
@@ -426,7 +419,6 @@ def calculate_deck_size():
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "
           f"Level: {character_level}, WIS: {wis_mod}, INT: {int_mod}, CHA: {cha_mod}")
 
-    # Collaborator's code had these caps, re-integrating for consistency
     wis_mod = min(wis_mod, 6)
     int_mod = min(int_mod, 6)
     cha_mod = min(cha_mod, 6)
@@ -439,14 +431,13 @@ def calculate_deck_size():
     return jsonify({"max_deck_size": max_deck_size})
 
 
-# For simplicity, we'll use a hardcoded 'player1' ID for now.
 PLAYER_ID = 'player1'
 
 
 @app.route('/api/deck', methods=['GET'])
 def get_player_deck():
-    player_id = "player1"  # Using a fixed player_id for now
-    deck_data = []  # Default to an empty list
+    player_id = "player1"
+    deck_data = []
     character_level = 1
     wis_mod = 0
     int_mod = 0
@@ -458,20 +449,19 @@ def get_player_deck():
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""
-                               SELECT deck_json, character_level, wis_mod, int_mod, cha_mod
-                               FROM PLAYER_DECKS
-                               WHERE player_id = :player_id
-                               """, [player_id])
+                     SELECT deck_json, character_level, wis_mod, int_mod, cha_mod
+                     FROM PLAYER_DECKS
+                     WHERE player_id = :player_id
+                 """, [player_id])
                 row = cursor.fetchone()
 
                 if row:
-                    deck_json_lob = row[0]  # This will now be an oracledb.LOB object
+                    deck_json_lob = row[0]
                     character_level = row[1] if row[1] is not None else 1
                     wis_mod = row[2] if row[2] is not None else 0
                     int_mod = row[3] if row[3] is not None else 0
                     cha_mod = row[4] if row[4] is not None else 0
 
-                    # Explicitly read the LOB object into a string
                     deck_json_str = deck_json_lob.read() if deck_json_lob else "[]"
 
                     print(
@@ -480,7 +470,7 @@ def get_player_deck():
                     print(
                         f"[{request.remote_addr}] GET /api/deck - Loaded character stats: Level={character_level}, WIS={wis_mod}, INT={int_mod}, CHA={cha_mod}")
 
-                    if deck_json_str and deck_json_str.strip() != "[]":  # Ensure it's not just an empty JSON array string
+                    if deck_json_str and deck_json_str.strip() != "[]":
                         try:
                             deck_data = json.loads(deck_json_str)
                             print(
@@ -489,7 +479,7 @@ def get_player_deck():
                             print(
                                 f"[{request.remote_addr}] GET /api/deck - JSON decoding error: {json_err}. Raw string: {deck_json_str}",
                                 flush=True)
-                            deck_data = []  # Reset to empty if JSON is malformed
+                            deck_data = []
                     else:
                         print(
                             f"[{request.remote_addr}] GET /api/deck - Retrieved deck_json_str was empty or just '[]'. Returning empty deck.")
@@ -501,7 +491,6 @@ def get_player_deck():
         print(f"[{request.remote_addr}] GET /api/deck - Error loading deck and stats: {e}", flush=True)
         return jsonify({'error': 'Failed to load deck and stats: ' + str(e)}), 500
 
-    # Return a dictionary containing both deck and character stats
     response_data = {
         'cards': deck_data,
         'character_level': character_level,
@@ -516,7 +505,7 @@ def get_player_deck():
 
 @app.route('/api/deck', methods=['POST'])
 def save_player_deck():
-    player_id = "player1"  # Fixed player ID for now
+    player_id = "player1"
 
     print(f"[{request.remote_addr}] POST /api/deck - Received request to save deck and stats.")
 
@@ -537,7 +526,6 @@ def save_player_deck():
 
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                # Explicitly tell oracledb that these bind variables are CLOBs
                 cursor.setinputsizes(
                     deck_json_update=oracledb.DB_TYPE_CLOB,
                     deck_json_insert=oracledb.DB_TYPE_CLOB
@@ -619,7 +607,6 @@ def card_used():
 
 # --- Server Startup ---
 if __name__ == '__main__':
-    # Initialize the database pool and perform table checks/population
     init_db_pool()
 
     print("\nStarting Python Flask backend for Spell Trading Cards App (Oracle DB Integrated)...")
@@ -631,5 +618,4 @@ if __name__ == '__main__':
     print("  POST /api/deck - Save player's active deck to Oracle DB")
     print("  POST /api/card_used - Mark a card as used (simulates logging)")
     print("---------------------------------------------------------")
-    # Run on 0.0.0.0 to make it accessible from outside the VM (e.g., your local React app)
     app.run(host='0.0.0.0', port=5000, debug=True)

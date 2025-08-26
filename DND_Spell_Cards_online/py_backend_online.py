@@ -18,9 +18,9 @@ CORS(app, resources={
 WALLET_DIR = "/home/opc/spell_card_app/Wallet"
 os.environ['TNS_ADMIN'] = WALLET_DIR
 
-DB_SERVICE_NAME = "g2mrxqwa818lwbj4_high"
-DB_USERNAME = "ELDRIC"
-DB_PASSWORD = "StupidGame69"
+DB_SERVICE_NAME = "g2mrxqw4_h"
+DB_USERNAME = "EC"
+DB_PASSWORD = "S69"
 
 # --- CSV File Configuration (from collaborator's work) ---
 CSV_FILE_PATH = '/home/opc/spell_card_app/Spell Trading Card Data.csv'

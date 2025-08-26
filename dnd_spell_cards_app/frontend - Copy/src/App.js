@@ -1,13 +1,13 @@
 // dnd-spell-cards-app/frontend/src/App.js
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'; // Added useRef
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid'; // Import uuid for unique keys for deck card instances
 
 // IMPORTANT: Update this to your VM's Public IP address (or domain name if configured)
 // When running locally against your local Flask, it's 'http://127.0.0.1:5000/api'.
 // When running React locally against Flask on VM, it's 'http://YOUR_VM_PUBLIC_IP:5000/api'.
-const API_BASE_URL = 'http://193.122.147.91:5000/api'; 
+const API_BASE_URL = 'http://193.122.147.91:5000/api';
 
 
 function App() {
@@ -21,30 +21,41 @@ function App() {
     const [selectedCards, setSelectedCards] = useState([]); // Cards currently in the player's deck (persistent)
     const [error, setError] = useState(''); // General error messages for UI
     const [loading, setLoading] = useState(true); // Loading state for initial data fetch
+    const [isDataLoaded, setIsDataLoaded] = useState(false); // State to track if initial data fetch is complete
 
-    // Ref to prevent initial useEffect for saving deck from firing
+    // Ref to prevent initial useEffect for saving deck from firing (no longer the primary mechanism for save)
     const isInitialMount = useRef(true);
 
     // --- Helper function to save the current deck state to the backend ---
-    const saveDeckToBackend = useCallback(async (currentDeck) => {
+    const saveDeckToBackend = useCallback(async (currentDeck, currentLevel, currentWisMod, currentIntMod, currentChaMod) => {
+        console.log("DEBUG: saveDeckToBackend called with currentDeck:", currentDeck);
+        console.log("DEBUG: Sending character stats to backend:", { currentLevel, currentWisMod, currentIntMod, currentChaMod });
         try {
             const response = await fetch(`${API_BASE_URL}/deck`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cards: currentDeck }), // Send the entire deck array
+                body: JSON.stringify({
+                    cards: currentDeck,
+                    character_level: currentLevel,
+                    wis_mod: currentWisMod,
+                    int_mod: currentIntMod,
+                    cha_mod: currentChaMod,
+                }), // Send the entire deck array AND character stats
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // Parse error response if available for more specific message
+                const errorData = await response.json().catch(() => ({ message: 'No error message from server.' }));
+                throw new Error(`HTTP error! status: ${response.status} - ${errorData.error || response.statusText}`);
             }
             const data = await response.json();
-            console.log('Deck saved to backend:', data.message);
+            console.log('Deck and stats saved to backend:', data.message);
         } catch (err) {
-            setError('Failed to save deck: ' + err.message);
-            console.error('Error saving deck to backend:', err);
+            setError('Failed to save deck and stats: ' + err.message);
+            console.error('Error saving deck and stats to backend:', err);
         }
-    }, []); // No dependencies, as it operates on the passed `currentDeck`
+    }, []); // Dependencies are now passed as arguments. setError is stable.
 
-    // --- Effect to Fetch All Cards AND Player Deck from Backend on Component Mount ---
+    // --- Effect to Fetch All Cards AND Player Deck/Stats from Backend on Component Mount ---
     useEffect(() => {
         async function fetchData() {
             try {
@@ -56,13 +67,24 @@ function App() {
                 const cardsData = await cardsResponse.json();
                 setAllCards(cardsData);
 
-                // Fetch player's saved deck
+                // Fetch player's saved deck and character stats
                 const deckResponse = await fetch(`${API_BASE_URL}/deck`);
                 if (!deckResponse.ok) {
                     throw new Error(`HTTP error fetching deck! status: ${deckResponse.status}`);
                 }
-                const deckData = await deckResponse.json();
-                setSelectedCards(deckData); // Load the saved deck
+                const deckAndStatsData = await deckResponse.json();
+
+                console.log("DEBUG: Deck and stats loaded from backend:", deckAndStatsData);
+
+                // CRITICAL: Ensure deckAndStatsData.cards is always an array, default to empty array if null/undefined
+                setSelectedCards(deckAndStatsData.cards || []); // Load the saved deck, default to empty array
+                setCharacterLevel(deckAndStatsData.character_level !== undefined ? deckAndStatsData.character_level : 1);
+                setWisMod(deckAndStatsData.wis_mod !== undefined ? deckAndStatsData.wis_mod : 0);
+                setIntMod(deckAndStatsData.int_mod !== undefined ? deckAndStatsData.int_mod : 0);
+                setChaMod(deckAndStatsData.cha_mod !== undefined ? deckAndStatsData.cha_mod : 0);
+
+                // CRITICAL: Set this AFTER all data is loaded into state
+                setIsDataLoaded(true);
 
             } catch (err) {
                 setError('Failed to fetch initial data: ' + err.message);
@@ -72,7 +94,7 @@ function App() {
             }
         }
         fetchData();
-    }, [saveDeckToBackend]); // Include saveDeckToBackend as a dependency for linting, though it won't re-run fetch
+    }, []); // Empty dependency array, this effect runs only once on mount
 
     // --- Effect to Calculate Max Deck Size when Character Stats Change ---
     useEffect(() => {
@@ -105,15 +127,18 @@ function App() {
         }
     }, [characterLevel, wisMod, intMod, chaMod]);
 
-    // --- Effect to Save Deck to Backend whenever `selectedCards` changes ---
+    // --- Effect to Save Deck and Stats to Backend whenever relevant state changes ---
     useEffect(() => {
-        // Prevent saving on the initial render when the deck is just loaded from backend
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
+        // CRITICAL: ONLY save if initial data has finished loading.
+        // This prevents saving default/empty state on the very first render/load.
+        if (!isDataLoaded) {
+            console.log("DEBUG: Skipping saveDeckToBackend - initial data not yet loaded.");
             return;
         }
-        saveDeckToBackend(selectedCards);
-    }, [selectedCards, saveDeckToBackend]);
+
+        console.log("DEBUG: useEffect triggered for state change (after initial load). Current selectedCards:", selectedCards, "Level:", characterLevel);
+        saveDeckToBackend(selectedCards, characterLevel, wisMod, intMod, chaMod);
+    }, [selectedCards, characterLevel, wisMod, intMod, chaMod, saveDeckToBackend, isDataLoaded]); // Add isDataLoaded to dependencies
 
 
     // --- Deck Building Logic: Add Card ---

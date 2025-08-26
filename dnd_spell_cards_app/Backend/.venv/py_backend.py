@@ -82,7 +82,7 @@ def calculate_deck_size():
     int_mod = min(int_mod, 6)
     cha_mod = min(cha_mod, 6)
     character_level = min(character_level, 20)
-    Big_booba = 77
+
  
 
     print(f"[{request.remote_addr}] POST /api/calculate_deck_size - "
@@ -138,7 +138,5 @@ if __name__ == '__main__':
     print("  POST /api/calculate_deck_size - Calculate max deck size")
     print("  POST /api/card_used - Mark a card as used (simulates logging)")
     print("---------------------------------------------------------")
-    if big_booba == 77:
-        app.run(port=5000, debug=True)
 
 

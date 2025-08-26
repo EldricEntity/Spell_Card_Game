@@ -1,201 +1,242 @@
-Spell ID,name,type,description,rarity,BacklashDamage,Dealt Damage,default_uses_per_rest
-C001,Minor Illusion,Cantrip,Creates a sound or an image of an object within range.,Common,1 psychic,N/A,2
-C002,Firebolt,Cantrip,Hurl a mote of fire at a creature or object.,Common,1d4 Fire,(1d10) - (2d10/lvl5) (3d10/lvl11) (4d10/lvl17) Fire,2
-C003,Acid Splash,Cantrip,Hurl a bubble of acid,Common,1d4 Acid,(1d6) - (2d6/lvl5) (3d6/lvl11) (4d6/lvl17) Acid,2
-C004,Blade Ward,Cantrip,Briefly reduce physical harm,Common,1 Force,N/A,2
-C005,Booming Blade,Cantrip,Strike with thunder if foe moves,Rare,1d4 Thunder,[Init](0d8/1d8/2d8/3d8) Thunder - (1d8/2d8/3d8/4d8) Thunder,2
-C006,Control Flames,Cantrip,Shape non-magical Fire,Common,1 Fire,N/A,2
-C007,Create Bonfire,Cantrip,Create a Bonfire that fills a 5-foot cube,Uncommon,1d4 Fire,(1d8) - (2d8/lvl5) (3d8/lvl11) (4d8/lvl17) Fire,2
-C008,Dancing Lights,Cantrip,You create up to four torch-sized lights,Common,1 Radiance,N/A,2
-C009,Druidcraft,Cantrip,Minor nature tricks,Common,1 Necrotic,N/A,2
-C010,Eldritch Blast ,Cantrip,beam of crackling energy streaks toward a creature within range,Rare,1d4 Necrotic,[1d10 Force] (1beam) - (2beam/lvl5) (3beam/lvl11) (4beam/lvl17)=multi-Target,2
-C011,Friends,Cantrip,briefly Charm a Creature,Uncommon,1 Psychic,N/A,2
-C012,Frostbite,Cantrip,cause numbing frost to form on one creature,Uncommon,1d4 Cold,(1d6) - (2d6/lvl5) (3d6/lvl11) (4d6/lvl17) Cold,2
-C013,Guidance,Cantrip,Boost ally’s skill check,Uncommon,1 Radiance,N/A,2
-C014,Gust,Cantrip,Use Wind to Push or disperse,Common,1 Force,N/A,2
-C015,Light,Cantrip,Illuminate objects,Common,1 Radiance,N/A,2
-C016,Lightning Lure,Cantrip,Use a Lash of Lightning to yank a foe closer,Uncommon,1d4 Lightning,(1d8) - (2d8/lvl5) (3d8/lvl11) (4d8/lvl17) Lightning,2
-C017,Mage Hand,Cantrip,Crate a spectral hand you control,Common,1 Force,N/A,2
-C018,Magic Stone,Cantrip,envelope 3 pebbles with magic,Common,1d4 Force,[Init](N/A) - [Thrown](1d6+SpellCastingModifier) Bludgeoning,2
-C019,Mending,Cantrip,Repair any object so long as the damage doesn't exceed a 1-foot cube,Common,1 Force,N/A,2
-C020,Message,Cantrip,Whisper across distance,Common,1 Force,N/A,2
-C021,Mind Sliver,Cantrip,Drive a Spike of Psychic energy into the mond of a creature,Uncommon,1d4 Psychic,(1d6) - (2d6/lvl5) (3d6/lvl11) (4d6/lvl17) Psychic,2
-C022,Mold Earth,Cantrip,Shape terrain in a 5-foot cube,Common,1d4 Force,N/A,2
-C023,Poison Spray,Cantrip,puff of noxious gas from your palm,Common,1d4 Poison,(1d12) - (2d12/lvl5) (3d12/lvl11) (4d12/lvl17) Poison,2
-C024,Prestidigation,Cantrip,Minor magical tricks,Common,1 Force,N/A,2
-C025,Ray of Frost,Cantrip,Cold beam slows foes,Common,1d4 Cold,(1d8) - (2d8/lvl5) (3d8/lvl11) (4d8/lvl17) Cold,2
-C026,Resistance,Cantrip,Boost saving throws briefly,Common,1 Force,N/A,2
-C027,Sacred Flame,Cantrip,Flame-like radiance descends on a creature,Common,1d4 Radiance,(1d8) - (2d8/lvl5) (3d8/lvl11) (4d8/lvl17) Radiance,2
-C028,Shape Water,Cantrip,Shape water in a 5-foot cube,Common,1d4 Force,N/A,2
-C029,Shocking Grasp,Cantrip,Lightning springs from your hand to deliver a shock to a creature you try to touch,Uncommon,1d4 Lightning,,2
-C030,Sword Burst,Cantrip,create a momentary circle of spectral blades that sweep around you,Uncommon,1d4 Force,,2
-C031,Thaumaturgy,Cantrip,Yor Voice Booms throughout a Radius,Common,1 Bleed,N/A,2
-C032,Thorn WHip,Cantrip,vine-like whip covered in thorns that lashes out at your command toward a creature,Uncommon,1d4 Bleed ,,2
-C033,Thunderclap,Cantrip,create a burst of thunderous sound,Rare,1d4 Thunder,,2
-C034,Truestrike,Cantrip,grants you a brief insight into the target’s defenses,Common,1d4 Force,N/A,2
-C035,Vicious Mockery,Cantrip,Emotional Damage,Uncommon,1d4 Psychic,,2
-L001,Absorb Elements,Leveled,,Rare, N/A,,1
-L002,Alarm,Leveled,,Common,2 Psychic,N/A,1
-L003,Animal Friendship,Leveled,,Common,2 Psychic,N/A,1
-L004,Armor of Agathys,Leveled,,Uncommon,2 Cold,N/A,1
-L005,Bane,Leveled,,Common,2 Force,N/A,1
-L006,Bless,Leveled,,Common,2 Radiant,N/A,1
-L007,Burning Hands,Leveled,,Uncommon,1d6 Fire,,1
-L008,Catapult,Leveled,,Uncommon,1d6 Force,,1
-L009,Ceremony,Leveled,,Common,1d4 Radiant,N/A,1
-L010,Chaos Bolt,Leveled,,Rare,1d8 Force,,1
-L011,Charm Person,Leveled,,Common,2 Psychic,N/A,1
-L012,Chromatic Orb,Leveled,,Rare,1d8 Force,,1
-L013,Color Spray,Leveled,,Common,2 Poison,N/A,1
-L014,Command,Leveled,,Uncommon,1d6 Psychic,N/A,1
-L015,Compelled Duel,Leveled,,Common,1d4 Psychic,N/A,1
-L016,Comprehend Languages,Leveled,,Common,2 Psychic,N/A,1
-L017,Create or Destroy Water,Leveled,,Common,2 Force,N/A,1
-L018,Cure Wounds,Leveled,,Uncommon,2 Necrotic,,1
-L019,Detect Evil and Good,Leveled,,Common,2 Psychic,,1
-L020,Detect Poison and Disease,Leveled,,Common,2 Psychic,,1
-L021,Disguise Self,Leveled,,Uncommon,2 Psychic,,1
-L022,Dissonant Whispers,Leveled,,Rare,1d12 Psychic,,1
-L023,Distort Value,Leveled,,Uncommon,2 Psychic,,1
-L024,Earth Tremor,Leveled,,Uncommon,2 Force,,1
-L025,Ensnaring Strike,Leveled,,Uncommon,1d4 Force,,1
-L026,Entangle,Leveled,,Uncommon,2 Force,,1
-L027,Expeditious Retreat,Leveled,,Common,3 Force,,1
-L028,Faerie Fire,Leveled,,Common,3 Radiant,,1
-L029,Feather Fall,Leveled,,Uncommon,4 Force,,1
-L030,Fog Cloud,Leveled,,Common,2 Poison,,1
-L031,Find Familiar,Leveled,,Rare,2 Psychic,,1
-L032,Frost Fingers,Leveled,,Uncommon,1d6 Cold,,1
-L033,Goodberry,Leveled,,Uncommon,1 Poison,,1
-L034,Grease,Leveled,,Common,2 Force,,1
-L035,Guiding Bolt,Leveled,,Rare,1d8 Radiant,,1
-L036,Hail of Thorns,Leveled,,Common,1d6 Piercing,,1
-L037,Healing Word,Leveled,,Uncommon,2 Force,,1
-L038,Hellish Rebuke,Leveled,,Rare,1d8 Fire,,1
-L039,Herosim,Leveled,,Uncommon,3 Radiant,,1
-L040,Hex,Leveled,,Common,1d6 Necrotic,,1
-L041,Hunter's Mark,Leveled,,Common,1d6 Radiant,,1
-L042,Ice Knife,Leveled,,Uncommon,1d10 cold,,1
-L043,Identify,Leveled,,Rare,2d6 Psychic,,1
-L044,Illusory Script,Leveled,,Uncommon,1d6 Necrotic,,1
-L045,Jump,Leveled,,Common,2 Force,,1
-L046,Longstrider,Leveled,,Common,2 Force,,1
-L047,Mage Armor,Leveled,,Uncommon,3 Thunder,,1
-L048,Magic Missle,Leveled,,Rare,2d4 Force,,1
-L049,Protection from Evil and Good,Leveled,,Uncommon,1d6 Cold,,1
-L050,Purify Food and Drink,Leveled,,Common,1d4 Poison,,1
-L051,Sanctuary,Leveled,,Uncommon,1d6 Radiant,,1
-L052,Searing Smite,Leveled,,Uncommon,1d6 Fire,,1
-L053,Shield,Leveled,,Rare,1d6 Thunder,,1
-L054,Shield of Faith,Leveled,,Uncommon,1d4 Radiant,,1
-L055,Silent Image,Leveled,,Uncommon,1d4 Psychic,,1
-L056,Silvery Barbs,Leveled,,Rare,1d10 Psychic,,1
-L057,Sleep,Leveled,,Uncommon,3 Psychic,,1
-L058,Snare,Leveled,,Common,2 Force,,1
-L059,Speak with Animals,Leveled,,Uncommon,1d4 Psychic,,1
-L060,Thunderous Smite,Leveled,,Uncommon,1d4 Thunder ,,1
-L061,Thunderwave,Leveled,,Rare,2d4 Thunder,,1
-L062,Witch Bolt,Leveled,,Uncommon,1d8 Lightning,,1
-L063,Wrathful Smite,Leveled,,Uncommon,1d6 Psychic,,1
-L064,Zephyr Strike,Leveled,,Rare,2d4 Force,,1
-L065,Detect Magic,Leveled,,Common,1d6 Psychic,,1
-L101,Aganazzar's Scorcher,Leveled,,Rare,1d10 Fire,,1
-L102,Aid,Leveled,,Uncommon,2 Poison,,1
-L103,Air Bubble,Leveled,,Common,2 Poison Damage,,1
-L104,Alter Self,Leveled,,Uncommon,1d6 Bleed,,1
-L105,Animal Messenger,Leveled,,Common,1d4 Psichic,,1
-L106,Arcane Lock,Leveled,,Uncommon,1d6 Force,,1
-L107,Augury,Leveled,,Common,1d6 Psychic,,1
-L108,Barkskin,Leveled,,Uncommon,1d8 Force,,1
-L109,Beast Sense,Leveled,,Common,1d4 Psychic,,1
-L110,Blur,Leveled,,Rare,1d6 Psychic,,1
-L111,Borrowed Knowledge,Leveled,,Uncommon,1d4 Necrotic,,1
-L112,Branding Smite,Leveled,,Uncommon,1d8 Radiant,,1
-L113,Calm Emotions,Leveled,,Uncommon,1d4 Psychic,,1
-L114,Cloud of Daggers,Leveled,,Rare,1d6 Bleed,,1
-L115,Continual Flame,Leveled,,Uncommon,3 Fire,,1
-L116,Cordon of Arrows,Leveled,,Common,2 Force,,1
-L117,Crown of Madness,Leveled,,Uncommon,1d6 Psychic,,1
-L118,Darkness,Leveled,,Rare,1d6 Radiant,,1
-L119,Darkvision,Leveled,,Common,2 Radiant,,1
-L120,Detect Thoughts,Leveled,,Rare,1d6 Psychic,,1
-L121,Dragon's Breath,Leveled,,Rare,1d4 Bleed,,1
-L122,Dust Devil,Leveled,,Uncommon,2 Force,,1
-L123,Earthbind,Leveled,,Uncommon,2 Force,,1
-L124,Enhance Ability,Leveled,,Uncommon,3 Poison,,1
-L125,Enlarge/Reduce,Leveled,,Uncommon,1d4 Force,,1
-L126,Enthrall,Leveled,,Common,3 Psychic,,1
-L127,Find Steed,Leveled,,Rare,1d8 Force ,,1
-L128,Find Traps,Leveled,,Common,3 Psychic,,1
-L129,Flame Blade,Leveled,,Uncommon,1d6 Fire,,1
-L130,Flameing Sphere,Leveled,,Rare,1d10 Fire,,1
-L131,Flock of Familiars,Leveled,,Rare,1d6 Necrotic,,1
-L132,Fortunes Favor,Leveled,,Rare,1d8 Force,,1
-L133,Gift of Gab,Leveled,,Common,1d4 Psychic,,1
-L134,Gust of Wind,Leveled,,Common,3 Force,,1
-L135,Healing Spirit,Leveled,,Rare,1d8 Poison,,1
-L136,Heat Metal,Leveled,,Rare,1d6 Fire,,1
-L137,Hold Person,Leveled,,Rare,1d8 Force,,1
-L138,Invisibility,Leveled,,Rare,1d6 Force,,1
-L139,Kinetic Jaunt,Leveled,,Rare,1d6 Force,,1
-L140,Knock,Leveled,,Uncommon,1d6 Force,,1
-L141,Lesser Restoration,Leveled,,Uncommon,1d4 Poison,,1
-L142,Levitate,Leveled,,Uncommon,1d4 Force,,1
-L143,Locate Animals or Plants,Leveled,,Common,2 Psychic,,1
-L144,Locate Object,Leveled,,Uncommon,2 Psychic,,1
-L145,Magic Mouth,Leveled,,Common,1 Psychic,,1
-L146,Magic Weapon,Leveled,,Uncommon,1d4 Force,,1
-L147,Melf's Acid Arrow,Leveled,,Uncommon,1d6 Acid,,1
-L148,Maximillian's Earthen Grasp,Leveled,,Rare,1d8 Force,,1
-L149,Mind Spike,Leveled,,Rare,1d6 Psychic,,1
-L150,Mirror image,Leveled,,Rare,5 Psychic,,1
-L151, Misty Step,Leveled,,Rare,1d8 Force,,1
-L152,Moonbeam,Leveled,,Rare,1d10 Radiant,,1
-L153,Pass without Trace,Leveled,,Rare,1d6 Force,,1
-L154,Phantasmal Force,Leveled,,Rare,4 Psychic,,1
-L155,Prayer of Healing,Leveled,,Uncommon,3 Radiant,,1
-L156,Protection from Poison,Leveled,,Common,1 Necrotic,,1
-L157,Pyrotechnics,Leveled,,Common,2 Fire,,1
-L158,Rope Trick,Leveled,,Uncommon,3 Force,,1
-L159,Scorching Ray,Leveled,,Rare,1d6 Fire,,1
-L160,See invisibility,Leveled,,Uncommon,1d4 Psychic,,1
-L161,Shadow Blade,Leveled,,Rare,2d4 Psychic,,1
-L162,Shatter,Leveled,,Rare,1d8 Thunder,,1
-L163,Silence,Leveled,,Uncommon,1d4 Force,,1
-L164,Skywrite,Leveled,,Common,2 Psychic,,1
-L165,Snilloc's Snowball Storm,Leveled,,Uncommon,2d4 Cold ,,1
-L166,Spider Climb,Leveled,,Uncommon,1d6 Poison,,1
-L167,Spike Growth,Leveled,,Rare,1d8 Poison,,1
-L168,Spiritual Weapon,Leveled,,Rare,1d6 Radiant,,1
-L169,Spray of Cards,Leveled,,Common,3 Force,,1
-L170,Suggestion,Leveled,,Legendary,1d12 Psychic,,1
-L171,Summon Beast,Leveled,,Rare,1d10 Force,,1
-L172,Vortex Warp,Leveled,,Rare,1d8 Force,,1
-L173,Warding Bond,Leveled,,Uncommon,1d4 Force,,1
-L174,Warding Wind,Leveled,,Uncommon,1d6 Force,,1
-L175,Warp Sense,Leveled,,Rare,4 Psychic,,1
-L176,Web,Leveled,,Rare,1d8 Force,,1
-L177,Zone of Truth,Leveled,,Uncommon,1d6 Radiant,,1
-L201,,,,,,,
-L202,,,,,,,
-L203,,,,,,,
-L204,,,,,,,
-L205,,,,,,,
-L206,,,,,,,
-L207,,,,,,,
-L208,,,,,,,
-L209,,,,,,,
-L210,,,,,,,
-L211,,,,,,,
-L212,,,,,,,
-L213,,,,,,,
-L214,,,,,,,
-L215,,,,,,,
-L216,,,,,,,
-L217,,,,,,,
-L218,,,,,,,
-L219,,,,,,,
-L220,,,,,,,
-L221,,,,,,,
-L222,,,,,,,
-L223,,,,,,,
+Spell ID,name,type,description,rarity,BacklashDamage,Effect,default_uses_per_rest,image_filename
+C001,Minor Illusion,Cantrip,Creates a sound or an image of an object within range.,Common,1 psychic,N/A,2,spell_placeholder.jpg
+C002,Firebolt,Cantrip,Hurl a mote of fire at a creature or object.,Common,1d4 Fire,1d10 Fire Add 1D10 every 5 levels,2,spell_placeholder.jpg
+C003,Acid Splash,Cantrip,Hurl a bubble of acid,Common,1d4 Acid,(1d6)  Acid,2,spell_placeholder.jpg
+C004,Blade Ward,Cantrip,Briefly reduce physical harm,Common,1 Force,N/A,2,spell_placeholder.jpg
+C005,Booming Blade,Cantrip,Strike with thunder if foe moves,Rare,1d4 Thunder,0d8 Thunder - 1d8 Thunder,2,spell_placeholder.jpg
+C006,Control Flames,Cantrip,Shape non-magical Fire,Common,1 Fire,N/A,2,spell_placeholder.jpg
+C007,Create Bonfire,Cantrip,,Uncommon,1d4 Fire,(1d8) Fire,2,spell_placeholder.jpg
+C008,Dancing Lights,Cantrip,You create up to four torch-sized lights,Common,1 Radiance,N/A,2,spell_placeholder.jpg
+C009,Druidcraft,Cantrip,Minor nature tricks,Common,1 Necrotic,N/A,2,spell_placeholder.jpg
+C010,Eldritch Blast ,Cantrip,beam of crackling energy streaks toward a creature within range,Rare,1d4 Necrotic,[1d10 Force] multi-Target,2,spell_placeholder.jpg
+C011,Friends,Cantrip,briefly Charm a Creature,Uncommon,1 Psychic,N/A,2,spell_placeholder.jpg
+C012,Frostbite,Cantrip,cause numbing frost to form on one creature,Uncommon,1d4 Cold,(1d6) Cold,2,spell_placeholder.jpg
+C013,Guidance,Cantrip,Boost ally’s skill check,Uncommon,1 Radiance,N/A,2,spell_placeholder.jpg
+C014,Gust,Cantrip,Use Wind to Push or disperse,Common,1 Force,N/A,2,spell_placeholder.jpg
+C015,Light,Cantrip,Illuminate objects,Common,1 Radiance,N/A,2,spell_placeholder.jpg
+C016,Lightning Lure,Cantrip,Use a Lash of Lightning to yank a foe closer,Uncommon,1d4 Lightning,(1d8) Lightning,2,spell_placeholder.jpg
+C017,Mage Hand,Cantrip,Crate a spectral hand you control,Common,1 Force,N/A,2,spell_placeholder.jpg
+C018,Magic Stone,Cantrip,envelope 3 pebbles with magic,Common,1d4 Force,[Init](N/A) - [Thrown](1d6+SpellCastingModifier) Bludgeoning no increase,2,spell_placeholder.jpg
+C019,Mending,Cantrip,Repair any object so long as the damage doesn't exceed a 1-foot cube,Common,1 Force,N/A,2,spell_placeholder.jpg
+C020,Message,Cantrip,Whisper across distance,Common,1 Force,N/A,2,spell_placeholder.jpg
+C021,Mind Sliver,Cantrip,Drive a Spike of Psychic energy into the mond of a creature,Uncommon,1d4 Psychic,(1d6) Psychic,2,spell_placeholder.jpg
+C022,Mold Earth,Cantrip,Shape terrain in a 5-foot cube,Common,1d4 Force,N/A,2,spell_placeholder.jpg
+C023,Poison Spray,Cantrip,puff of noxious gas from your palm,Common,1d4 Poison,(1d12) Poison,2,spell_placeholder.jpg
+C024,Prestidigation,Cantrip,Minor magical tricks,Common,1 Force,N/A,2,spell_placeholder.jpg
+C025,Ray of Frost,Cantrip,Cold beam slows foes,Common,1d4 Cold,(1d8) Cold,2,spell_placeholder.jpg
+C026,Resistance,Cantrip,Boost saving throws briefly,Common,1 Force,N/A,2,spell_placeholder.jpg
+C027,Sacred Flame,Cantrip,Flame-like radiance descends on a creature,Common,1d4 Radiance,(1d8) Radiance,2,spell_placeholder.jpg
+C028,Shape Water,Cantrip,Shape water in a 5-foot cube,Common,1d4 Force,N/A,2,spell_placeholder.jpg
+C029,Shocking Grasp,Cantrip,Lightning springs from your hand to deliver a shock to a creature you try to touch,Uncommon,1d4 Lightning,,2,spell_placeholder.jpg
+C030,Sword Burst,Cantrip,create a momentary circle of spectral blades that sweep around you,Uncommon,1d4 Force,,2,spell_placeholder.jpg
+C031,Thaumaturgy,Cantrip,Yor Voice Booms throughout a Radius,Common,1 Bleed,N/A,2,spell_placeholder.jpg
+C032,Thorn WHip,Cantrip,vine-like whip covered in thorns that lashes out at your command toward a creature,Uncommon,1d4 Bleed ,,2,spell_placeholder.jpg
+C033,Thunderclap,Cantrip,create a burst of thunderous sound,Rare,1d4 Thunder,,2,spell_placeholder.jpg
+C034,Truestrike,Cantrip,grants you a brief insight into the target’s defenses,Common,1d4 Force,N/A,2,spell_placeholder.jpg
+C035,Vicious Mockery,Cantrip,Emotional Damage,Uncommon,1d4 Psychic,,2,spell_placeholder.jpg
+L001,Absorb Elements,Leveled,,Rare, N/A,,1,spell_placeholder.jpg
+L002,Alarm,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
+L003,Animal Friendship,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
+L004,Armor of Agathys,Leveled,,Uncommon,2 Cold,N/A,1,spell_placeholder.jpg
+L005,Bane,Leveled,,Common,2 Force,N/A,1,spell_placeholder.jpg
+L006,Bless,Leveled,,Common,2 Radiant,N/A,1,spell_placeholder.jpg
+L007,Burning Hands,Leveled,,Uncommon,1d6 Fire,,1,spell_placeholder.jpg
+L008,Catapult,Leveled,,Uncommon,1d6 Force,,1,spell_placeholder.jpg
+L009,Ceremony,Leveled,,Common,1d4 Radiant,N/A,1,spell_placeholder.jpg
+L010,Chaos Bolt,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L011,Charm Person,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
+L012,Chromatic Orb,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L013,Color Spray,Leveled,,Common,2 Poison,N/A,1,spell_placeholder.jpg
+L014,Command,Leveled,,Uncommon,1d6 Psychic,N/A,1,spell_placeholder.jpg
+L015,Compelled Duel,Leveled,,Common,1d4 Psychic,N/A,1,spell_placeholder.jpg
+L016,Comprehend Languages,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
+L017,Create or Destroy Water,Leveled,,Common,2 Force,N/A,1,spell_placeholder.jpg
+L018,Cure Wounds,Leveled,,Uncommon,2 Necrotic,,1,spell_placeholder.jpg
+L019,Detect Evil and Good,Leveled,,Common,2 Psychic,,1,spell_placeholder.jpg
+L020,Detect Poison and Disease,Leveled,,Common,2 Psychic,,1,spell_placeholder.jpg
+L021,Disguise Self,Leveled,,Uncommon,2 Psychic,,1,spell_placeholder.jpg
+L022,Dissonant Whispers,Leveled,,Rare,1d12 Psychic,,1,spell_placeholder.jpg
+L023,Distort Value,Leveled,,Uncommon,2 Psychic,,1,spell_placeholder.jpg
+L024,Earth Tremor,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L025,Ensnaring Strike,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L026,Entangle,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L027,Expeditious Retreat,Leveled,,Common,3 Force,,1,spell_placeholder.jpg
+L028,Faerie Fire,Leveled,,Common,3 Radiant,,1,spell_placeholder.jpg
+L029,Feather Fall,Leveled,,Uncommon,4 Force,,1,spell_placeholder.jpg
+L030,Fog Cloud,Leveled,,Common,2 Poison,,1,spell_placeholder.jpg
+L031,Find Familiar,Leveled,,Rare,2 Psychic,,1,spell_placeholder.jpg
+L032,Frost Fingers,Leveled,,Uncommon,1d6 Cold,,1,spell_placeholder.jpg
+L033,Goodberry,Leveled,,Uncommon,1 Poison,,1,spell_placeholder.jpg
+L034,Grease,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L035,Guiding Bolt,Leveled,,Rare,1d8 Radiant,,1,spell_placeholder.jpg
+L036,Hail of Thorns,Leveled,,Common,1d6 Piercing,,1,spell_placeholder.jpg
+L037,Healing Word,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L038,Hellish Rebuke,Leveled,,Rare,1d8 Fire,,1,spell_placeholder.jpg
+L039,Herosim,Leveled,,Uncommon,3 Radiant,,1,spell_placeholder.jpg
+L040,Hex,Leveled,,Common,1d6 Necrotic,,1,spell_placeholder.jpg
+L041,Hunter's Mark,Leveled,,Common,1d6 Radiant,,1,spell_placeholder.jpg
+L042,Ice Knife,Leveled,,Uncommon,1d10 cold,,1,spell_placeholder.jpg
+L043,Identify,Leveled,,Rare,2d6 Psychic,,1,spell_placeholder.jpg
+L044,Illusory Script,Leveled,,Uncommon,1d6 Necrotic,,1,spell_placeholder.jpg
+L045,Jump,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L046,Longstrider,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L047,Mage Armor,Leveled,,Uncommon,3 Thunder,,1,spell_placeholder.jpg
+L048,Magic Missle,Leveled,,Rare,2d4 Force,,1,spell_placeholder.jpg
+L049,Protection from Evil and Good,Leveled,,Uncommon,1d6 Cold,,1,spell_placeholder.jpg
+L050,Purify Food and Drink,Leveled,,Common,1d4 Poison,,1,spell_placeholder.jpg
+L051,Sanctuary,Leveled,,Uncommon,1d6 Radiant,,1,spell_placeholder.jpg
+L052,Searing Smite,Leveled,,Uncommon,1d6 Fire,,1,spell_placeholder.jpg
+L053,Shield,Leveled,,Rare,1d6 Thunder,,1,spell_placeholder.jpg
+L054,Shield of Faith,Leveled,,Uncommon,1d4 Radiant,,1,spell_placeholder.jpg
+L055,Silent Image,Leveled,,Uncommon,1d4 Psychic,,1,spell_placeholder.jpg
+L056,Silvery Barbs,Leveled,,Rare,1d10 Psychic,,1,spell_placeholder.jpg
+L057,Sleep,Leveled,,Uncommon,3 Psychic,,1,spell_placeholder.jpg
+L058,Snare,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L059,Speak with Animals,Leveled,,Uncommon,1d4 Psychic,,1,spell_placeholder.jpg
+L060,Thunderous Smite,Leveled,,Uncommon,1d4 Thunder ,,1,spell_placeholder.jpg
+L061,Thunderwave,Leveled,,Rare,2d4 Thunder,,1,spell_placeholder.jpg
+L062,Witch Bolt,Leveled,,Uncommon,1d8 Lightning,,1,spell_placeholder.jpg
+L063,Wrathful Smite,Leveled,,Uncommon,1d6 Psychic,,1,spell_placeholder.jpg
+L064,Zephyr Strike,Leveled,,Rare,2d4 Force,,1,spell_placeholder.jpg
+L065,Detect Magic,Leveled,,Common,1d6 Psychic,,1,spell_placeholder.jpg
+L101,Aganazzar's Scorcher,Leveled,,Rare,1d10 Fire,,1,spell_placeholder.jpg
+L102,Aid,Leveled,,Uncommon,2 Poison,,1,spell_placeholder.jpg
+L103,Air Bubble,Leveled,,Common,2 Poison Damage,,1,spell_placeholder.jpg
+L104,Alter Self,Leveled,,Uncommon,1d6 Bleed,,1,spell_placeholder.jpg
+L105,Animal Messenger,Leveled,,Common,1d4 Psichic,,1,spell_placeholder.jpg
+L106,Arcane Lock,Leveled,,Uncommon,1d6 Force,,1,spell_placeholder.jpg
+L107,Augury,Leveled,,Common,1d6 Psychic,,1,spell_placeholder.jpg
+L108,Barkskin,Leveled,,Uncommon,1d8 Force,,1,spell_placeholder.jpg
+L109,Beast Sense,Leveled,,Common,1d4 Psychic,,1,spell_placeholder.jpg
+L110,Blur,Leveled,,Rare,1d6 Psychic,,1,spell_placeholder.jpg
+L111,Borrowed Knowledge,Leveled,,Uncommon,1d4 Necrotic,,1,spell_placeholder.jpg
+L112,Branding Smite,Leveled,,Uncommon,1d8 Radiant,,1,spell_placeholder.jpg
+L113,Calm Emotions,Leveled,,Uncommon,1d4 Psychic,,1,spell_placeholder.jpg
+L114,Cloud of Daggers,Leveled,,Rare,1d6 Bleed,,1,spell_placeholder.jpg
+L115,Continual Flame,Leveled,,Uncommon,3 Fire,,1,spell_placeholder.jpg
+L116,Cordon of Arrows,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L117,Crown of Madness,Leveled,,Uncommon,1d6 Psychic,,1,spell_placeholder.jpg
+L118,Darkness,Leveled,,Rare,1d6 Radiant,,1,spell_placeholder.jpg
+L119,Darkvision,Leveled,,Common,2 Radiant,,1,spell_placeholder.jpg
+L120,Detect Thoughts,Leveled,,Rare,1d6 Psychic,,1,spell_placeholder.jpg
+L121,Dragon's Breath,Leveled,,Rare,1d4 Bleed,,1,spell_placeholder.jpg
+L122,Dust Devil,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L123,Earthbind,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L124,Enhance Ability,Leveled,,Uncommon,3 Poison,,1,spell_placeholder.jpg
+L125,Enlarge/Reduce,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L126,Enthrall,Leveled,,Common,3 Psychic,,1,spell_placeholder.jpg
+L127,Find Steed,Leveled,,Rare,1d8 Force ,,1,spell_placeholder.jpg
+L128,Find Traps,Leveled,,Common,3 Psychic,,1,spell_placeholder.jpg
+L129,Flame Blade,Leveled,,Uncommon,1d6 Fire,,1,spell_placeholder.jpg
+L130,Flameing Sphere,Leveled,,Rare,1d10 Fire,,1,spell_placeholder.jpg
+L131,Flock of Familiars,Leveled,,Rare,1d6 Necrotic,,1,spell_placeholder.jpg
+L132,Fortunes Favor,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L133,Gift of Gab,Leveled,,Common,1d4 Psychic,,1,spell_placeholder.jpg
+L134,Gust of Wind,Leveled,,Common,3 Force,,1,spell_placeholder.jpg
+L135,Healing Spirit,Leveled,,Rare,1d8 Poison,,1,spell_placeholder.jpg
+L136,Heat Metal,Leveled,,Rare,1d6 Fire,,1,spell_placeholder.jpg
+L137,Hold Person,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L138,Invisibility,Leveled,,Rare,1d6 Force,,1,spell_placeholder.jpg
+L139,Kinetic Jaunt,Leveled,,Rare,1d6 Force,,1,spell_placeholder.jpg
+L140,Knock,Leveled,,Uncommon,1d6 Force,,1,spell_placeholder.jpg
+L141,Lesser Restoration,Leveled,,Uncommon,1d4 Poison,,1,spell_placeholder.jpg
+L142,Levitate,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L143,Locate Animals or Plants,Leveled,,Common,2 Psychic,,1,spell_placeholder.jpg
+L144,Locate Object,Leveled,,Uncommon,2 Psychic,,1,spell_placeholder.jpg
+L145,Magic Mouth,Leveled,,Common,1 Psychic,,1,spell_placeholder.jpg
+L146,Magic Weapon,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L147,Melf's Acid Arrow,Leveled,,Uncommon,1d6 Acid,,1,spell_placeholder.jpg
+L148,Maximillian's Earthen Grasp,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L149,Mind Spike,Leveled,,Rare,1d6 Psychic,,1,spell_placeholder.jpg
+L150,Mirror image,Leveled,,Rare,5 Psychic,,1,spell_placeholder.jpg
+L151, Misty Step,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L152,Moonbeam,Leveled,,Rare,1d10 Radiant,,1,spell_placeholder.jpg
+L153,Pass without Trace,Leveled,,Rare,1d6 Force,,1,spell_placeholder.jpg
+L154,Phantasmal Force,Leveled,,Rare,4 Psychic,,1,spell_placeholder.jpg
+L155,Prayer of Healing,Leveled,,Uncommon,3 Radiant,,1,spell_placeholder.jpg
+L156,Protection from Poison,Leveled,,Common,1 Necrotic,,1,spell_placeholder.jpg
+L157,Pyrotechnics,Leveled,,Common,2 Fire,,1,spell_placeholder.jpg
+L158,Rope Trick,Leveled,,Uncommon,3 Force,,1,spell_placeholder.jpg
+L159,Scorching Ray,Leveled,,Rare,1d6 Fire,,1,spell_placeholder.jpg
+L160,See invisibility,Leveled,,Uncommon,1d4 Psychic,,1,spell_placeholder.jpg
+L161,Shadow Blade,Leveled,,Rare,2d4 Psychic,,1,spell_placeholder.jpg
+L162,Shatter,Leveled,,Rare,2d6 Thunder,,1,spell_placeholder.jpg
+L163,Silence,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L164,Skywrite,Leveled,,Common,2 Psychic,,1,spell_placeholder.jpg
+L165,Snilloc's Snowball Storm,Leveled,,Uncommon,2d4 Cold ,,1,spell_placeholder.jpg
+L166,Spider Climb,Leveled,,Uncommon,1d6 Poison,,1,spell_placeholder.jpg
+L167,Spike Growth,Leveled,,Rare,1d8 Poison,,1,spell_placeholder.jpg
+L168,Spiritual Weapon,Leveled,,Rare,1d6 Radiant,,1,spell_placeholder.jpg
+L169,Spray of Cards,Leveled,,Common,3 Force,,1,spell_placeholder.jpg
+L170,Suggestion,Leveled,,Legendary,4d4 Psychic,,1,spell_placeholder.jpg
+L171,Summon Beast,Leveled,,Rare,1d10 Force,,1,spell_placeholder.jpg
+L172,Vortex Warp,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L173,Warding Bond,Leveled,,Uncommon,1d4 Force,,1,spell_placeholder.jpg
+L174,Warding Wind,Leveled,,Uncommon,1d6 Force,,1,spell_placeholder.jpg
+L175,Warp Sense,Leveled,,Rare,4 Psychic,,1,spell_placeholder.jpg
+L176,Web,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
+L177,Zone of Truth,Leveled,,Uncommon,1d6 Radiant,,1,spell_placeholder.jpg
+L201,Antagonize,Leveled,,Uncommon,1d6 Psychic,,1,spell_placeholder.jpg
+L202,Ashardalon's Stride,Leveled,,Rare,2d4 Fire,,1,spell_placeholder.jpg
+L203,Aura of Vitality,Leveled,Veteren Grandpa,Rare,8 Necrotic,,1,spell_placeholder.jpg
+L204,Beacon of Hope,Leveled,Medal of Honor,Uncommon,2d4 Necrotic,,1,spell_placeholder.jpg
+L205,Blinding SMite,Leveled,Blinded Grandpa,Rare,1d12 Radiant,,1,spell_placeholder.jpg
+L206,Blink,Leveled,Gone to visit Grandpa,Rare,6 Force,,1,spell_placeholder.jpg
+L207,Call Lightning,Leveled,"""I killed Fitty Men""",Rare,2d4 Cold,,1,spell_placeholder.jpg
+L208,Catnap,Leveled,,Common,1d4 Psychic or Sleep,,1,spell_placeholder.jpg
+L209,Clairvoyance,Leveled,Schizo,Uncommon,2d4 Psychic,,1,spell_placeholder.jpg
+L210,Conjure Animals,Leveled,Replacement for Grief,Rare,4 Necrotic,,1,spell_placeholder.jpg
+L211,Conjure Barrage,Leveled,One For All,Rare,5 Force,,1,spell_placeholder.jpg
+L212,Counterspell,Leveled,Uno Skip,Legendary,2d8 Force,,1,spell_placeholder.jpg
+L213,Create Food or Water,Leveled,,Common,1d4 Poison,,1,spell_placeholder.jpg
+L214,Crusader's Mantle,Leveled,,Rare,1d6 Radiant,,1,spell_placeholder.jpg
+L215,Daylight,Leveled,,Common,4 Radiant,,1,spell_placeholder.jpg
+L216,Dispel Magic,Leveled,,Rare,2d4 Force,,1,spell_placeholder.jpg
+L217,Elemental Weapon,Leveled,Coat your weapon with an Element,Uncommon,1d6 (element chosen),"Add 1 to attack/1d4 (Acid, Cold, Fire, Lightning, Thunder)",1,spell_placeholder.jpg
+L218,Enemies Abound,Leveled,Glorified - Crown of Madness,Rare,1d6 Psychic,,1,spell_placeholder.jpg
+L219,Erupting Earth,Leveled,,Rare,1d12 Force,,1,spell_placeholder.jpg
+L220,Fast Friends,Leveled,,Uncommon,1d6 Psychic,,1,spell_placeholder.jpg
+L221,Fear,Leveled,,Legendary,2d6 Psychic,,1,spell_placeholder.jpg
+L222,Fireball,Leveled,All Creatures in a 20ft-Radius Perform a Saving Throw,Legendary,3d6 Fire,8d6 Fire,1,spell_placeholder.jpg
+L223,Flame Arrows,Leveled,,Uncommon,1d6 Fire,,1,spell_placeholder.jpg
+L224,Fly,Leveled,,Rare,2d6 Force,N/A,1,spell_placeholder.jpg
+L225,Galder's Tower,Leveled,,Uncommon,1d6 Force,N/A,1,spell_placeholder.jpg
+L226,Gaseous Form,Leveled,,Uncommon,1d6 Bleed,N/A,1,spell_placeholder.jpg
+L227,Glyph of Warding,Leveled,,Legendary,2d12 Force,"Spell Glyph:N/A - Explosion: 5d6 (Acid, COld, Fire, Lightning, Thunder)",1,spell_placeholder.jpg
+L228,Haste,Leveled,,Legendary,3d4 Force,N/A,1,spell_placeholder.jpg
+L229,Hunger of Hadar,Leveled,,Rare,1d10 Poison,,1,spell_placeholder.jpg
+L230,Hypnotic Pattern,Leveled,,Legendary,2d8 Psychic,,1,spell_placeholder.jpg
+L231,Incite Greed,Leveled,,Uncommon,1d8 Psychic,,1,spell_placeholder.jpg
+L232,Intellect Fortress,Leveled,,Rare,1d12 Psychic,,1,spell_placeholder.jpg
+L233,Leomund's Tiny Hut,Leveled,,Rare,8 Force,,1,spell_placeholder.jpg
+L234,Lightning Arrow,Leveled,Your ranged weapon mimics a Lightning Bolt  before attacking,Rare,2d10 Lightning,,1,spell_placeholder.jpg
+L235,Lightning Bolt,Leveled,,Legendary,2d12 Lightning,,1,spell_placeholder.jpg
+L236,Magic Circle,Leveled,,Rare,,,1,spell_placeholder.jpg
+L237,Major Image,Leveled,,Rare,,,1,spell_placeholder.jpg
+L238, Mass Healing Word,Leveled,,Rare,,,1,spell_placeholder.jpg
+L239,Meld into Stone,Leveled,,Common,,,1,spell_placeholder.jpg
+L240,Melf's Minute Meteors,Leveled,,Rare,,,1,spell_placeholder.jpg
+L241,Phantom Steed ,Leveled,,Common,,,1,spell_placeholder.jpg
+L242,Plant Growth,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L243,Protection from Energy,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L244,Remove Curse,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L245,Sending,Leveled,,Rare,,,1,spell_placeholder.jpg
+L246,Sleet Storm,Leveled,,Rare,,,1,spell_placeholder.jpg
+L247,Slow,Leveled,,Legendary,,,1,spell_placeholder.jpg
+L248,Speak with Plants,Leveled,,Common,,,1,spell_placeholder.jpg
+L249,Spirit Guardians,Leveled,,Legendary,4d8 Radiant,,1,spell_placeholder.jpg
+L250,Stinking Cloud,Leveled,,Rare,,,1,spell_placeholder.jpg
+L251,Summon Fey,Leveled,,Rare,,,1,spell_placeholder.jpg
+L252, Summon Lesser Demons,Leveled,,Rare,,,1,spell_placeholder.jpg
+L253, Shummon Shadowspawn,Leveled,,Rare,,,1,spell_placeholder.jpg
+L254,Thunder Step,Leveled,,Rare,,,1,spell_placeholder.jpg
+L255,Tidal Wave,Leveled,,Rare,,,1,spell_placeholder.jpg
+L256,Tiny Servant,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L257, Tongues,Leveled,,Common,,,1,spell_placeholder.jpg
+L258,Wall of Sand,Leveled,,Common,,,1,spell_placeholder.jpg
+L259,Wall of Water,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L260,Water Breathing,Leveled,,Common,,,1,spell_placeholder.jpg
+L261,Water Walk,Leveled,,Common,,,1,spell_placeholder.jpg
+L262,Wind Wall,Leveled,,Uncommon,,,1,spell_placeholder.jpg
+L301,,Leveled,,,,,1,spell_placeholder.jpg
+L302,,Leveled,,,,,1,spell_placeholder.jpg

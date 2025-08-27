@@ -1,14 +1,374 @@
 // dnd-spell-cards-app/frontend/src/App.js
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './App.css';
+import React, { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid'; // Import uuid for unique keys for deck card instances
 
 // IMPORTANT: Update this to your VM's Public IP address (or domain name if configured)
-// When running locally against your local Flask, it's 'http://127.0.0.1:5000/api'.
-// When running React locally against Flask on VM, it's 'http://YOUR_VM_PUBLIC_IP:5000/api'.
-const API_BASE_URL = 'http://193.122.147.91:5000/api'; 
+const API_BASE_URL = 'http://193.122.147.91:5000/api';
 
+// Inline CSS for self-contained component
+const AppStyles = `
+    body {
+        background-color: #f0e6d2;
+        font-family: 'Inter', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+
+    .App {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .app-title {
+        color: #2d3748;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    .login-container, .stats-container {
+        background: #4a5568; /* Dark gray for a solid background */
+        color: #e2e8f0; /* Light gray text */
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    .login-container input {
+        padding: 0.6rem 0.8rem;
+        border-radius: 0.5rem;
+        border: 1px solid #a0aec0;
+        background: #e2e8f0;
+        color: #2d3748;
+        font-size: 1rem;
+        flex-grow: 1;
+        max-width: 180px;
+    }
+
+    .login-container button, .use-button, .reset-button, .remove-button, .select-button {
+        background-color: #63b3ed; /* Blue button */
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .login-container button:hover, .select-button:hover:not(:disabled) {
+        background-color: #4299e1; /* Darker blue on hover */
+        transform: translateY(-2px);
+    }
+
+    .select-button:disabled, .use-button:disabled {
+        background-color: #cbd5e0;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .stats-container {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+
+    .stats-container label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    }
+
+    .stats-container input {
+        width: 4rem;
+        padding: 0.25rem;
+        border-radius: 0.5rem;
+        border: none;
+        background: #e2e8f0;
+        color: #2d3748;
+        text-align: center;
+    }
+
+    .stats-container p {
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .message-box {
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: bold;
+        z-index: 1000; /* High z-index to appear above everything */
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .message-box.success {
+        background-color: #48bb78; /* Green success color */
+        color: white;
+    }
+
+    .message-box.error {
+        background-color: #f56565; /* Red error color */
+        color: white;
+    }
+
+    @keyframes fadein {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    @keyframes fadeout {
+        from { opacity: 1; }
+        to   { opacity: 0; }
+    }
+
+    .tab-navigation {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: 1200px;
+        margin-bottom: 1.5rem;
+        background-color: #e2e8f0;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden; /* Ensures rounded corners */
+    }
+
+    .tab-item {
+        flex: 1;
+        text-align: center;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        font-weight: bold;
+        color: #4a5568;
+        background-color: #e2e8f0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        border-bottom: 3px solid transparent; /* For active indicator */
+    }
+
+    .tab-item:hover:not(.active) {
+        background-color: #cbd5e0;
+    }
+
+    .tab-item.active {
+        background-color: #63b3ed;
+        color: white;
+        border-bottom-color: #2b6cb0;
+    }
+
+    .main-content {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 1200px;
+        flex: 1; /* Allows content to take up remaining space */
+    }
+
+    .card-collection-panel, .built-deck-panel {
+        background: #fdfaf5;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        flex: 1;
+        min-width: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-title {
+        text-align: center;
+        color: #2c5282;
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .card-list, .deck-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        flex-grow: 1;
+    }
+
+    .card-item {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .card-item:hover.available-card {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+    }
+
+    .card-item.deck-card {
+        background: #edf2f7; /* Lighter background for deck cards */
+    }
+
+    .card-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-name {
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #2c5282;
+        margin-bottom: 0.4rem;
+    }
+
+    .card-type {
+        font-style: italic;
+        color: #718096;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-description {
+        font-size: 0.85rem;
+        color: #4a5568;
+        flex-grow: 1; /* Allows description to take up available space */
+        margin-bottom: 0.75rem;
+    }
+
+    .card-meta, .card-uses {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-actions {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .use-button {
+        background-color: #3182ce; /* Blue use button */
+        color: white;
+    }
+    .use-button:hover:not(:disabled) {
+        background-color: #2b6cb0;
+        transform: translateY(-1px);
+    }
+
+    .reset-button {
+        background-color: #68d391; /* Green reset button */
+        color: white;
+    }
+    .reset-button:hover {
+        background-color: #48bb78;
+        transform: translateY(-1px);
+    }
+
+    .remove-button {
+        background-color: #fc8181; /* Red remove button */
+        color: white;
+    }
+    .remove-button:hover {
+        background-color: #e53e3e;
+        transform: translateY(-1px);
+    }
+
+    .empty-message, .pre-login-message {
+        text-align: center;
+        padding: 2rem;
+        background: #e9e9e9;
+        border-radius: 0.75rem;
+        color: #555;
+        font-style: italic;
+        margin: 1rem;
+    }
+
+    .error-message {
+        color: #e53e3e;
+        background-color: #fed7d7;
+        border: 1px solid #fc8181;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        margin-top: 1rem;
+        font-weight: bold;
+    }
+
+    .highlight {
+        color: #3182ce;
+        font-weight: bold;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .main-content {
+            flex-direction: column;
+        }
+        .login-container, .stats-container, .tab-navigation {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .login-container input {
+            max-width: 100%;
+        }
+        .tab-item {
+            border-bottom: none; /* No bottom border on stacked tabs */
+            border-right: 3px solid transparent; /* Use right border for active indicator */
+        }
+        .tab-item.active {
+            border-bottom-color: transparent;
+            border-right-color: #2b6cb0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .app-title {
+            font-size: 2rem;
+        }
+        .panel-title {
+            font-size: 1.5rem;
+        }
+        .login-container button, .use-button, .reset-button, .remove-button, .select-button {
+            width: 100%; /* Full width buttons on very small screens */
+            padding: 0.6rem 1rem;
+        }
+        .card-list, .deck-list {
+            grid-template-columns: 1fr; /* Single column layout for cards */
+        }
+    }
+`;
 
 function App() {
     // --- State Variables ---
@@ -20,81 +380,148 @@ function App() {
     const [maxDeckSize, setMaxDeckSize] = useState(0);
     const [selectedCards, setSelectedCards] = useState([]); // Cards currently in the player's deck (persistent)
     const [error, setError] = useState(''); // General error messages for UI
-    const [loading, setLoading] = useState(true); // Loading state for initial data fetch
-    const [isDataLoaded, setIsDataLoaded] = useState(false); // New state to track if initial data fetch is complete
 
-    // Ref to prevent initial useEffect for saving deck from firing (no longer the primary mechanism for save)
-    const isInitialMount = useRef(true);
+    // New states for login/auth
+    const [playerId, setPlayerId] = useState('');
+    const [password, setPassword] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [message, setMessage] = useState({ text: '', type: '' });
+    const [loading, setLoading] = useState(true); // Loading state for initial data fetch of allCards
 
-    // --- Helper function to save the current deck state to the backend ---
-    const saveDeckToBackend = useCallback(async (currentDeck, currentLevel, currentWisMod, currentIntMod, currentChaMod) => {
-        console.log("DEBUG: saveDeckToBackend called with currentDeck:", currentDeck);
-        console.log("DEBUG: Sending character stats to backend:", { currentLevel, currentWisMod, currentIntMod, currentChaMod });
+    // New state for tab management
+    const [activeTab, setActiveTab] = useState('available'); // 'available' or 'deck'
+
+    // --- Helper function to display messages ---
+    const showMessage = useCallback((text, type) => {
+        setMessage({ text, type });
+        setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+    }, []);
+
+    // --- API Call: Create Account ---
+    const handleCreateAccount = async () => {
+        if (!playerId || !password) {
+            showMessage('Player ID and password are required to create an account.', 'error');
+            return;
+        }
+        setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/deck`, {
+            const response = await fetch(`${API_BASE_URL}/deck/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player_id: playerId, password }),
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to create account.');
+            }
+            
+            showMessage('Account created successfully! You can now log in.', 'success');
+        } catch (err) {
+            console.error('Error creating account:', err);
+            showMessage(`Failed to create account: ${err.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // --- API Call: Login and Load Deck ---
+    const handleLoginAndLoadDeck = async () => {
+        if (!playerId || !password) {
+            showMessage('Player ID and password are required to log in.', 'error');
+            return;
+        }
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/deck/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player_id: playerId, password }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Authentication failed.');
+            }
+
+            // Load data from backend upon successful login
+            setSelectedCards(data.cards || []);
+            setCharacterLevel(data.character_level !== undefined ? data.character_level : 1);
+            setWisMod(data.wis_mod !== undefined ? data.wis_mod : 0);
+            setIntMod(data.int_mod !== undefined ? data.int_mod : 0);
+            setChaMod(data.cha_mod !== undefined ? data.cha_mod : 0);
+            setIsAuthenticated(true);
+            setActiveTab('deck'); // Automatically switch to the deck tab after login
+
+            showMessage('Login successful! Deck loaded.', 'success');
+        } catch (err) {
+            setIsAuthenticated(false);
+            console.error('Error logging in:', err);
+            showMessage(`Failed to load deck: ${err.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // --- API Call: Save Deck ---
+    const handleSaveDeck = async () => {
+        if (!isAuthenticated) {
+            showMessage('You must be logged in to save your deck.', 'error');
+            return;
+        }
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/deck/save`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    cards: currentDeck,
-                    character_level: currentLevel,
-                    wis_mod: currentWisMod,
-                    int_mod: currentIntMod,
-                    cha_mod: currentChaMod,
-                }), // Send the entire deck array AND character stats
+                    player_id: playerId,
+                    password: password, // Send password for re-validation on backend
+                    cards: selectedCards,
+                    character_level: characterLevel,
+                    wis_mod: wisMod,
+                    int_mod: intMod,
+                    cha_mod: chaMod,
+                }),
             });
-            if (!response.ok) {
-                // Parse error response if available for more specific message
-                const errorData = await response.json().catch(() => ({ message: 'No error message from server.' }));
-                throw new Error(`HTTP error! status: ${response.status} - ${errorData.error || response.statusText}`);
-            }
-            const data = await response.json();
-            console.log('Deck and stats saved to backend:', data.message);
-        } catch (err) {
-            setError('Failed to save deck and stats: ' + err.message);
-            console.error('Error saving deck and stats to backend:', err);
-        }
-    }, []); // Dependencies are now passed as arguments. setError is stable.
 
-    // --- Effect to Fetch All Cards AND Player Deck/Stats from Backend on Component Mount ---
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to save deck.');
+            }
+
+            showMessage('Deck and stats saved successfully!', 'success');
+        } catch (err) {
+            console.error('Error saving deck:', err);
+            showMessage(`Failed to save deck: ${err.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // --- Effect to Fetch All Cards on Component Mount ---
     useEffect(() => {
-        async function fetchData() {
+        const fetchAllCards = async () => {
+            setLoading(true);
             try {
-                // Fetch master list of all cards
                 const cardsResponse = await fetch(`${API_BASE_URL}/cards`);
                 if (!cardsResponse.ok) {
                     throw new Error(`HTTP error fetching cards! status: ${cardsResponse.status}`);
                 }
                 const cardsData = await cardsResponse.json();
                 setAllCards(cardsData);
-
-                // Fetch player's saved deck and character stats
-                const deckResponse = await fetch(`${API_BASE_URL}/deck`);
-                if (!deckResponse.ok) {
-                    throw new Error(`HTTP error fetching deck! status: ${deckResponse.status}`);
-                }
-                const deckAndStatsData = await deckResponse.json(); // Backend now returns an object
-                
-                console.log("DEBUG: Deck and stats loaded from backend:", deckAndStatsData);
-
-                // Set states, providing default values if data is missing
-                setSelectedCards(deckAndStatsData.cards || []); // Load the saved deck, default to empty array
-                setCharacterLevel(deckAndStatsData.character_level !== undefined ? deckAndStatsData.character_level : 1);
-                setWisMod(deckAndStatsData.wis_mod !== undefined ? deckAndStatsData.wis_mod : 0);
-                setIntMod(deckAndStatsData.int_mod !== undefined ? deckAndStatsData.int_mod : 0);
-                setChaMod(deckAndStatsData.cha_mod !== undefined ? deckAndStatsData.cha_mod : 0);
-
-                // CRITICAL: Set this AFTER all data is loaded into state
-                setIsDataLoaded(true); 
-
             } catch (err) {
-                setError('Failed to fetch initial data: ' + err.message);
                 console.error('Error fetching initial data:', err);
+                showMessage('Failed to fetch initial data: ' + err.message, 'error');
             } finally {
                 setLoading(false);
             }
-        }
-        fetchData();
-    }, []); // Empty dependency array, this effect runs only once on mount
+        };
+        fetchAllCards();
+    }, [showMessage]); // Empty dependency array, this effect runs only once on mount
 
     // --- Effect to Calculate Max Deck Size when Character Stats Change ---
     useEffect(() => {
@@ -127,30 +554,20 @@ function App() {
         }
     }, [characterLevel, wisMod, intMod, chaMod]);
 
-    // --- Effect to Save Deck and Stats to Backend whenever relevant state changes ---
-    useEffect(() => {
-        // CRITICAL: ONLY save if initial data has finished loading.
-        // This prevents saving default/empty state on the very first render/load.
-        if (!isDataLoaded) {
-            console.log("DEBUG: Skipping saveDeckToBackend - initial data not yet loaded.");
+    // --- Deck Building Logic: Add Card ---
+    const handleAddCardToDeck = useCallback((card) => {
+        if (!isAuthenticated) {
+            showMessage("You must be logged in to build a deck.", "error");
             return;
         }
-        
-        console.log("DEBUG: useEffect triggered for state change (after initial load). Current selectedCards:", selectedCards, "Level:", characterLevel);
-        saveDeckToBackend(selectedCards, characterLevel, wisMod, intMod, chaMod);
-    }, [selectedCards, characterLevel, wisMod, intMod, chaMod, saveDeckToBackend, isDataLoaded]); // Add isDataLoaded to dependencies
-
-
-    // --- Deck Building Logic: Add Card ---
-    const handleAddCardToDeck = (card) => {
         if (selectedCards.length >= maxDeckSize) {
-            setError('Deck is full! Remove cards to add new ones.');
+            showMessage('Deck is full! Remove cards to add new ones.', 'error');
             return;
         }
 
         const cantripCountInDeck = selectedCards.filter(c => c.type === 'Cantrip').length;
         if (card.type !== 'Cantrip' && cantripCountInDeck === 0 && selectedCards.length === 0) {
-             setError('Your deck must contain at least one Cantrip! Add a Cantrip first.');
+             showMessage('Your deck must contain at least one Cantrip! Add a Cantrip first.', 'error');
              return;
         }
 
@@ -159,24 +576,24 @@ function App() {
             instance_id: uuidv4(),
             current_uses: card.default_uses_per_rest
         }]);
-        setError('');
-    };
+        showMessage('Card added to your deck!', 'success');
+    }, [isAuthenticated, maxDeckSize, selectedCards, showMessage]);
 
     // --- Deck Building Logic: Remove Card ---
-    const handleRemoveCardFromDeck = (instance_id) => {
+    const handleRemoveCardFromDeck = useCallback((instance_id) => {
         const updatedDeck = selectedCards.filter(card => card.instance_id !== instance_id);
         const cantripCount = updatedDeck.filter(c => c.type === 'Cantrip').length;
 
         if (cantripCount === 0 && updatedDeck.length > 0) {
-            setError('Your deck must contain at least one Cantrip! You cannot remove the last one.');
+            showMessage('Your deck must contain at least one Cantrip! You cannot remove the last one.', 'error');
             return;
         }
         setSelectedCards(updatedDeck);
-        setError('');
-    };
+        showMessage('Card removed from deck.', 'success');
+    }, [selectedCards, showMessage]);
 
     // --- Card Usage Logic: Mark Card as Used ---
-    const handleMarkCardUsed = async (instance_id) => {
+    const handleMarkCardUsed = useCallback(async (instance_id) => {
         const cardToUse = selectedCards.find(card => card.instance_id === instance_id);
         if (!cardToUse) return;
 
@@ -193,8 +610,8 @@ function App() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        card_name: cardToUse.name,
-                        card_type: cardToUse.type,
+                        name: cardToUse.name, // Use 'name' to match backend's 'card_name' expectation
+                        type: cardToUse.type, // Use 'type' to match backend's 'card_type' expectation
                         deck_card_id: cardToUse.instance_id
                     }),
                 });
@@ -205,158 +622,171 @@ function App() {
                 console.log('Backend notification:', data.message);
                 console.log('Simulated System Log Entry from Backend:', data.log_entry);
             } catch (err) {
-                setError('Failed to notify backend of card usage for logging: ' + err.message);
+                showMessage('Failed to notify backend of card usage for logging: ' + err.message, 'error');
                 console.error('Error sending card used notification:', err);
             }
         } else {
-            setError(`"${cardToUse.name}" has no uses left! It needs a long rest.`);
+            showMessage(`"${cardToUse.name}" has no uses left! It needs a long rest.`, 'error');
         }
-    };
+    }, [selectedCards, showMessage]);
 
     // --- Card Usage Logic: Reset Card Uses (Long Rest) ---
-    const handleResetCardUses = (instance_id) => {
+    const handleResetCardUses = useCallback((instance_id) => {
         setSelectedCards(prev =>
             prev.map(card =>
                 card.instance_id === instance_id ? { ...card, current_uses: card.default_uses_per_rest } : card
             )
         );
-        setError('');
-    };
-
-    // --- Conditional Rendering for Loading/Error States ---
-    if (loading) {
-        return <div className="app-container">Loading cards...</div>;
-    }
-
-    if (error && !loading) {
-        return <div className="error-message">{error}</div>;
-    }
+        showMessage('Card uses reset!', 'success');
+    }, [showMessage]);
 
     // --- Main Component Render ---
     return (
-        <div className="app-container">
-            <h1 className="app-title">Spell Trading Cards Manager</h1>
+        <>
+            <style>{AppStyles}</style>
+            <div className="App">
+                <h1 className="app-title">Spell Trading Cards Manager</h1>
 
-            {/* Character Stats Input Panel */}
-            <div className="character-stats-panel">
-                <h2 className="panel-title">Character Stats</h2>
-                <div className="input-group">
-                    <label htmlFor="charLevel">Level:</label>
+                {/* Login/Auth Section */}
+                <div className="login-container">
                     <input
-                        id="charLevel"
-                        type="number"
-                        value={characterLevel}
-                        onChange={(e) => setCharacterLevel(Math.max(1, parseInt(e.target.value) || 1))}
-                        min="1"
+                        type="text"
+                        placeholder="Player ID"
+                        value={playerId}
+                        onChange={(e) => setPlayerId(e.target.value)}
                     />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="wisMod">WIS Mod:</label>
                     <input
-                        id="wisMod"
-                        type="number"
-                        value={wisMod}
-                        onChange={(e) => setWisMod(parseInt(e.target.value) || 0)}
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
+                    <button onClick={handleLoginAndLoadDeck}>Log In</button>
+                    <button onClick={handleCreateAccount}>Create Account</button>
+                    {isAuthenticated && <button onClick={handleSaveDeck}>Save Deck</button>}
                 </div>
-                <div className="input-group">
-                    <label htmlFor="intMod">INT Mod:</label>
-                    <input
-                        id="intMod"
-                        type="number"
-                        value={intMod}
-                        onChange={(e) => setIntMod(parseInt(e.target.value) || 0)}
-                    />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="chaMod">CHA Mod:</label>
-                    <input
-                        id="chaMod"
-                        type="number"
-                        value={chaMod}
-                        onChange={(e) => setChaMod(parseInt(e.target.value) || 0)}
-                    />
-                </div>
-                <div className="deck-summary">
-                    Max Deck Size: <span className="highlight">{maxDeckSize}</span> | Current Deck: <span className="highlight">{selectedCards.length}</span>
-                </div>
-                {error && <div className="error-message">{error}</div>}
-            </div>
 
-            <div className="main-content">
-                {/* Available Cards Section */}
-                <div className="card-collection-panel">
-                    <h2 className="panel-title">Available Spells</h2>
-                    <div className="card-list">
-                        {allCards.map((card) => (
-                            <div key={card.id} className="card-item available-card">
-                                <img
-                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
-                                    alt={card.name}
-                                    className="card-image"
-                                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
-                                />
-                                <h3 className="card-name">{card.name} ({card.type})</h3>
-                                <p className="card-description">{card.description}</p>
-                                <p className="card-meta">Rarity: {card.rarity}</p>
-                                <button
-                                    onClick={() => handleAddCardToDeck(card)}
-                                    disabled={selectedCards.length >= maxDeckSize}
-                                    className="select-button"
-                                >
-                                    Add to Deck
-                                </button>
-                            </div>
-                        ))}
+                {/* Character Stats Input Panel */}
+                <div className="stats-container">
+                    <label>Level: <input type="number" value={characterLevel} onChange={(e) => setCharacterLevel(Math.max(1, parseInt(e.target.value) || 1))} min="1" max="20" /></label>
+                    <label>WIS Mod: <input type="number" value={wisMod} onChange={(e) => setWisMod(parseInt(e.target.value) || 0)} /></label>
+                    <label>INT Mod: <input type="number" value={intMod} onChange={(e) => setIntMod(parseInt(e.target.value) || 0)} /></label>
+                    <label>CHA Mod: <input type="number" value={chaMod} onChange={(e) => setChaMod(parseInt(e.target.value) || 0)} /></label>
+                    <p>Max Deck Size: <span className="highlight">{maxDeckSize}</span></p>
+                </div>
+
+                {/* Message Box */}
+                {message.text && <div className={`message-box ${message.type}`}>{message.text}</div>}
+
+                {/* Tab Navigation */}
+                <div className="tab-navigation">
+                    <div 
+                        className={`tab-item ${activeTab === 'available' ? 'active' : ''}`} 
+                        onClick={() => setActiveTab('available')}
+                    >
+                        Available Spells
+                    </div>
+                    <div 
+                        className={`tab-item ${activeTab === 'deck' ? 'active' : ''}`} 
+                        onClick={() => setActiveTab('deck')}
+                    >
+                        Your Deck ({selectedCards.length}/{maxDeckSize})
                     </div>
                 </div>
 
-                {/* Built Deck Section */}
-                <div className="built-deck-panel">
-                    <h2 className="panel-title">Your Deck ({selectedCards.length}/{maxDeckSize})</h2>
-                    <div className="deck-list">
-                        {selectedCards.length === 0 ? (
-                            <p className="empty-message">Select cards from the left to build your deck!</p>
-                        ) : (
-                            selectedCards.map((card) => (
-                                <div key={card.instance_id} className="card-item deck-card">
-                                    <img
-                                        src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
-                                        alt={card.name}
-                                        className="card-image"
-                                        onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
-                                    />
-                                    <h3 className="card-name">{card.name} ({card.type})</h3>
-                                    <p className="card-description">{card.description}</p>
-                                    <p className="card-uses">Uses Left: {card.current_uses}/{card.default_uses_per_rest}</p>
-                                    <div className="card-actions">
-                                        <button
-                                            onClick={() => handleMarkCardUsed(card.instance_id)}
-                                            disabled={card.current_uses <= 0}
-                                            className="use-button"
-                                        >
-                                            Use
-                                        </button>
-                                        <button
-                                            onClick={() => handleResetCardUses(card.instance_id)}
-                                            className="reset-button"
-                                        >
-                                            Reset Uses
-                                        </button>
-                                        <button
-                                            onClick={() => handleRemoveCardFromDeck(card.instance_id)}
-                                            className="remove-button"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
+                {/* Main Content Area - Conditional Rendering based on activeTab */}
+                <div className="main-content">
+                    {/* Available Cards Section */}
+                    {activeTab === 'available' && (
+                        <div className="card-collection-panel">
+                            <h2 className="panel-title">Available Spells</h2>
+                            {loading ? (
+                                <p className="empty-message">Loading cards...</p>
+                            ) : allCards.length > 0 ? (
+                                <div className="card-list">
+                                    {allCards.map((card) => (
+                                        <div key={card.id} className="card-item available-card" onClick={() => handleAddCardToDeck(card)}>
+                                            <img
+                                                src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
+                                                alt={card.name}
+                                                className="card-image"
+                                                onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
+                                            />
+                                            <h3 className="card-name">{card.name} ({card.type})</h3>
+                                            <p className="card-description">{card.description}</p>
+                                            <p className="card-meta">Rarity: {card.rarity}</p>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); handleAddCardToDeck(card); }} // Stop propagation to prevent parent onClick
+                                                disabled={!isAuthenticated || selectedCards.length >= maxDeckSize}
+                                                className="select-button"
+                                            >
+                                                Add to Deck
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            ) : (
+                                <p className="empty-message">No cards available. Please check the backend data source.</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Built Deck Section */}
+                    {activeTab === 'deck' && (
+                        <div className="built-deck-panel">
+                            <h2 className="panel-title">Your Deck ({selectedCards.length}/{maxDeckSize})</h2>
+                            <div className="deck-list">
+                                {isAuthenticated ? (
+                                    selectedCards.length === 0 ? (
+                                        <p className="empty-message">Select cards from the "Available Spells" tab to build your deck!</p>
+                                    ) : (
+                                        selectedCards.map((card) => (
+                                            <div key={card.instance_id} className="card-item deck-card">
+                                                <img
+                                                    src={`https://placehold.co/100x150/a8dadc/ffffff?text=${card.name.split('.')[0].replace('_', '%20')}`}
+                                                    alt={card.name}
+                                                    className="card-image"
+                                                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
+                                                />
+                                                <h3 className="card-name">{card.name} ({card.type})</h3>
+                                                <p className="card-description">{card.description}</p>
+                                                <p className="card-uses">Uses Left: {card.current_uses}/{card.default_uses_per_rest}</p>
+                                                <div className="card-actions">
+                                                    <button
+                                                        onClick={() => handleMarkCardUsed(card.instance_id)}
+                                                        disabled={card.current_uses <= 0}
+                                                        className="use-button"
+                                                    >
+                                                        Use
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleResetCardUses(card.instance_id)}
+                                                        className="reset-button"
+                                                    >
+                                                        Reset Uses
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleRemoveCardFromDeck(card.instance_id)}
+                                                        className="remove-button"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )
+                                ) : (
+                                    <div className="pre-login-message">
+                                        <h3>Please log in to load your character and spell deck.</h3>
+                                        <p>Once logged in, your deck and stats will appear here.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

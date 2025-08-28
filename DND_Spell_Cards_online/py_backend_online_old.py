@@ -10,6 +10,7 @@ import contextlib
 import pandas as pd
 import hashlib
 from uuid import uuid4
+import random  # For random card selection
 
 # --- Flask App Initialization ---
 app = Flask(__name__)
@@ -120,48 +121,51 @@ def init_db_pool():
                 cursor.execute("SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = 'CARDS'")
                 if not cursor.fetchone()[0] > 0:
                     print("CARDS table not found. Creating and populating...")
-                    # Using case-sensitive column names in quotes to ensure they match
                     cursor.execute("""
                         CREATE TABLE CARDS (
-                            "ID" VARCHAR2(64) PRIMARY KEY,
-                            "NAME" VARCHAR2(100) NOT NULL,
-                            "TYPE" VARCHAR2(50) NOT NULL,
-                            "DESCRIPTION" VARCHAR2(500),
-                            "RARITY" VARCHAR2(50),
-                            "DEFAULT_USES_PER_REST" NUMBER,
-                            "IMAGE_FILENAME" VARCHAR2(100)
+                            ID VARCHAR2(64) PRIMARY KEY,
+                            NAME VARCHAR2(100) NOT NULL,
+                            TYPE VARCHAR2(50) NOT NULL,
+                            DESCRIPTION VARCHAR2(500),
+                            RARITY VARCHAR2(50),
+                            DEFAULT_USES_PER_REST NUMBER,
+                            IMAGE_FILENAME VARCHAR2(100)
                         )
                     """)
                     conn.commit()
                     cards_to_insert = fetch_cards_from_csv()
                     if cards_to_insert:
                         print("Populating CARDS table from CSV data.")
-                        # This SQL statement has been updated to match the column names
-                        # from the CSV file to ensure correct insertion.
                         cursor.executemany("""
-                            INSERT INTO CARDS ("ID", "NAME", "IMAGE_FILENAME", "DESCRIPTION", "TYPE", "RARITY", "DEFAULT_USES_PER_REST")
+                            INSERT INTO CARDS (ID, NAME, IMAGE_FILENAME, DESCRIPTION, TYPE, RARITY, DEFAULT_USES_PER_REST)
                             VALUES (:id, :name, :image_filename, :description, :type, :rarity, :default_uses_per_rest)
                         """, cards_to_insert)
                         conn.commit()
                     else:
                         print("WARNING: Could not populate CARDS table from CSV. It is empty.")
 
-                # Check and create PLAYER_DECKS table
+                # --- FIX: Explicitly drop and re-create PLAYER_DECKS table for consistent schema ---
                 cursor.execute("SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = 'PLAYER_DECKS'")
-                if not cursor.fetchone()[0] > 0:
-                    print("PLAYER_DECKS table not found. Creating table...")
-                    cursor.execute("""
-                        CREATE TABLE PLAYER_DECKS (
-                            "PLAYER_ID" VARCHAR2(255) PRIMARY KEY,
-                            "DECK_DATA" CLOB,
-                            "CHARACTER_LEVEL" NUMBER,
-                            "WIS_MOD" NUMBER,
-                            "INT_MOD" NUMBER,
-                            "CHA_MOD" NUMBER,
-                            "HASHED_PASSWORD" VARCHAR2(255)
-                        )
-                    """)
+                if cursor.fetchone()[0] > 0:
+                    print("PLAYER_DECKS table found. Dropping existing table for schema update...")
+                    cursor.execute("DROP TABLE PLAYER_DECKS")
                     conn.commit()
+
+                print("Re-creating PLAYER_DECKS table with final schema...")
+                cursor.execute("""
+                    CREATE TABLE PLAYER_DECKS (
+                        PLAYER_ID VARCHAR2(255) PRIMARY KEY,
+                        PLAYER_ACTIVE_DECK_JSON CLOB,        -- Stores active deck card instances (with UUIDs)
+                        PLAYER_UNLOCKED_COLLECTION_JSON CLOB, -- Stores all unlocked card IDs (allows duplicates)
+                        CHARACTER_LEVEL NUMBER,
+                        WIS_MOD NUMBER,
+                        INT_MOD NUMBER,
+                        CHA_MOD NUMBER,
+                        PASSWORD_HASH VARCHAR2(255)
+                    )
+                """)
+                conn.commit()
+                print("PLAYER_DECKS table re-created successfully with correct schema.")
 
     except Exception as e:
         print(f"Error during initial database setup: {e}")
@@ -177,25 +181,32 @@ def get_db_connection():
 
 
 def get_player_deck(player_id):
-    """Fetches a player's deck and stats from the database."""
+    """Fetches a player's deck and stats, including unlocked cards, from the database."""
     try:
         with contextlib.closing(get_db_connection()) as connection:
             with contextlib.closing(connection.cursor()) as cursor:
                 sql = """
-                SELECT "DECK_DATA", "CHARACTER_LEVEL", "WIS_MOD", "INT_MOD", "CHA_MOD", "HASHED_PASSWORD"
-                FROM PLAYER_DECKS WHERE "PLAYER_ID" = :player_id
+                SELECT PLAYER_ACTIVE_DECK_JSON, PLAYER_UNLOCKED_COLLECTION_JSON, CHARACTER_LEVEL, WIS_MOD, INT_MOD, CHA_MOD, PASSWORD_HASH
+                FROM PLAYER_DECKS WHERE PLAYER_ID = :player_id
                 """
                 cursor.execute(sql, player_id=player_id)
                 row = cursor.fetchone()
                 if row:
-                    deck_data = json.loads(row[0]) if row[0] else []
+                    active_deck_clob = row[0]
+                    unlocked_collection_clob = row[1]
+
+                    active_deck_instances = json.loads(active_deck_clob.read()) if active_deck_clob else []
+                    unlocked_collection_ids = json.loads(
+                        unlocked_collection_clob.read()) if unlocked_collection_clob else []
+
                     return {
-                        "deck": deck_data,
-                        "character_level": row[1],
-                        "wis_mod": row[2],
-                        "int_mod": row[3],
-                        "cha_mod": row[4],
-                        "hashed_password": row[5]
+                        "active_deck_instances": active_deck_instances,
+                        "unlocked_collection_ids": unlocked_collection_ids,  # This list can now contain duplicates
+                        "character_level": row[2],
+                        "wis_mod": row[3],
+                        "int_mod": row[4],
+                        "cha_mod": row[5],
+                        "hashed_password": row[6]
                     }
                 return None
     except Exception as e:
@@ -203,34 +214,60 @@ def get_player_deck(player_id):
         return None
 
 
-def save_player_deck(player_id, deck_data, character_level, wis_mod, int_mod, cha_mod, password_hash):
-    """Saves or updates a player's deck and stats in the database."""
+def save_player_deck(player_id, active_deck_instances, unlocked_collection_ids, character_level, wis_mod, int_mod,
+                     cha_mod, password_hash):
+    """Saves or updates a player's deck and stats, including unlocked cards, in the database."""
     try:
         with contextlib.closing(get_db_connection()) as connection:
             with contextlib.closing(connection.cursor()) as cursor:
-                # Check if the player already exists
-                sql = "SELECT COUNT(*) FROM PLAYER_DECKS WHERE "
-                PLAYER_ID
-                " = :player_id"
-                cursor.execute(sql, player_id=player_id)
+                print(f"Attempting to save deck for player: {player_id}")
+
+                sql_check = "SELECT COUNT(*) FROM PLAYER_DECKS WHERE PLAYER_ID = :p_player_id"
+                cursor.execute(sql_check, p_player_id=player_id)
                 exists = cursor.fetchone()[0]
 
                 if exists:
+                    print("Player found. Updating existing deck...")
                     sql = """
-                    UPDATE PLAYER_DECKS SET "DECK_DATA" = :deck_data, "CHARACTER_LEVEL" = :level, 
-                    "WIS_MOD" = :wis, "INT_MOD" = :int, "CHA_MOD" = :cha
-                    WHERE "PLAYER_ID" = :player_id
+                    UPDATE PLAYER_DECKS SET PLAYER_ACTIVE_DECK_JSON = :p_active_deck_instances, 
+                    PLAYER_UNLOCKED_COLLECTION_JSON = :p_unlocked_collection_ids,
+                    CHARACTER_LEVEL = :p_level, WIS_MOD = :p_wis, INT_MOD = :p_int, CHA_MOD = :p_cha
+                    WHERE PLAYER_ID = :p_player_id
                     """
-                    cursor.execute(sql, deck_data=json.dumps(deck_data), level=character_level,
-                                   wis=wis_mod, int=int_mod, cha=cha_mod, player_id=player_id)
+                    bind_vars = {
+                        'p_active_deck_instances': json.dumps(active_deck_instances),
+                        'p_unlocked_collection_ids': json.dumps(unlocked_collection_ids),
+                        # This list can now contain duplicates
+                        'p_level': character_level,
+                        'p_wis': wis_mod,
+                        'p_int': int_mod,
+                        'p_cha': cha_mod,
+                        'p_player_id': player_id
+                    }
+                    cursor.execute(sql, bind_vars)
                 else:
+                    print("Player not found. Creating new account...")
                     sql = """
-                    INSERT INTO PLAYER_DECKS ("PLAYER_ID", "DECK_DATA", "CHARACTER_LEVEL", "WIS_MOD", "INT_MOD", "CHA_MOD", "HASHED_PASSWORD") 
-                    VALUES (:player_id, :deck_data, :level, :wis, :int, :cha, :password_hash)
+                    INSERT INTO PLAYER_DECKS (PLAYER_ID, PLAYER_ACTIVE_DECK_JSON, PLAYER_UNLOCKED_COLLECTION_JSON, 
+                                            CHARACTER_LEVEL, WIS_MOD, INT_MOD, CHA_MOD, PASSWORD_HASH) 
+                    VALUES (:p_player_id, :p_active_deck_instances, :p_unlocked_collection_ids, 
+                            :p_level, :p_wis, :p_int, :p_cha, :p_password_hash)
                     """
-                    cursor.execute(sql, player_id=player_id, deck_data=json.dumps(deck_data), level=character_level,
-                                   wis=wis_mod, int=int_mod, cha=cha_mod, password_hash=password_hash)
+                    bind_vars = {
+                        'p_player_id': player_id,
+                        'p_active_deck_instances': json.dumps(active_deck_instances),
+                        'p_unlocked_collection_ids': json.dumps(unlocked_collection_ids),
+                        # This list can now contain duplicates
+                        'p_level': character_level,
+                        'p_wis': wis_mod,
+                        'p_int': int_mod,
+                        'p_cha': cha_mod,
+                        'p_password_hash': password_hash
+                    }
+                    cursor.execute(sql, bind_vars)
+
                 connection.commit()
+                print("Database operation successful.")
                 return True
     except Exception as e:
         print(f"Error saving player deck: {e}")
@@ -246,42 +283,43 @@ def status():
 @app.route('/api/cards', methods=['GET'])
 def get_cards():
     global all_cards_data
-    if not all_cards_data:
-        try:
-            with contextlib.closing(get_db_connection()) as connection:
-                with contextlib.closing(connection.cursor()) as cursor:
-                    # Correcting the column names to match the Oracle DB schema
-                    sql = "SELECT "
-                    ID
-                    ", "
-                    NAME
-                    ", "
-                    TYPE
-                    ", "
-                    DESCRIPTION
-                    ", "
-                    DEFAULT_USES_PER_REST
-                    ", "
-                    IMAGE_FILENAME
-                    " FROM CARDS"
-                    cursor.execute(sql)
-                    rows = cursor.fetchall()
-                    cards = []
-                    for row in rows:
-                        cards.append({
-                            "id": row[0],
-                            "name": row[1],
-                            "type": row[2],
-                            "description": row[3],
-                            "default_uses_per_rest": row[4],
-                            "image_filename": row[5]
-                        })
-                    all_cards_data = cards
-        except Exception as e:
-            print(f"Error fetching cards from DB: {e}")
-            return jsonify({"message": "No cards found"}), 404
+    # Always fetch directly from DB to ensure up-to-date data and proper sorting.
+    try:
+        with contextlib.closing(get_db_connection()) as connection:
+            with contextlib.closing(connection.cursor()) as cursor:
+                sql = "SELECT ID, NAME, TYPE, DESCRIPTION, RARITY, DEFAULT_USES_PER_REST, IMAGE_FILENAME FROM CARDS"
+                cursor.execute(sql)
+                rows = cursor.fetchall()
+                cards = []
+                for row in rows:
+                    cards.append({
+                        "id": row[0],
+                        "name": row[1],
+                        "type": row[2],
+                        "description": row[3],
+                        "rarity": row[4],
+                        "default_uses_per_rest": row[5],
+                        "image_filename": row[6]
+                    })
 
-    return jsonify(all_cards_data)
+                # --- Sorting Logic ---
+                # 1. Cantrips on top
+                # 2. Alphabetical order by name
+                def card_sort_key(card):
+                    # Cantrips (type == "Cantrip") get a lower sort value (0) to appear first
+                    # Other cards get a higher sort value (1)
+                    type_priority = 0 if card.get('type') == 'Cantrip' else 1
+                    return (type_priority, card.get('name', '').lower())
+
+                sorted_cards = sorted(cards, key=card_sort_key)
+
+                all_cards_data = sorted_cards  # Update the global cache with sorted data
+                print(f"Successfully fetched and sorted {len(all_cards_data)} cards from the database.")
+                return jsonify(all_cards_data)
+
+    except Exception as e:
+        print(f"Error fetching cards from DB: {e}")
+        return jsonify({"message": "No cards found"}), 404
 
 
 @app.route('/api/calculate_deck_size', methods=['POST'])
@@ -293,7 +331,8 @@ def calculate_deck_size():
     cha_mod = data.get('cha_mod', 0)
 
     # Simplified calculation logic
-    max_deck_size = character_level + wis_mod + int_mod + cha_mod
+    deck_size = (character_level/2) + ((wis_mod + int_mod + cha_mod)/3)
+    max_deck_size = int(deck_size)
     return jsonify({"max_deck_size": max_deck_size})
 
 
@@ -311,7 +350,44 @@ def create_deck():
         return jsonify({"error": "Player ID already exists"}), 409
 
     hashed_password = hash_password(password)
-    success = save_player_deck(player_id, [], 1, 0, 0, 0, hashed_password)
+
+    # --- Initial Card Provisioning based on user rules ---
+    initial_unlocked_collection_ids = []  # This will now allow duplicates
+
+    # Fetch all cards to identify cantrips, Burning Hands, and Cure Wounds
+    with app.test_client() as client:
+        cards_response = client.get('/api/cards')
+        if cards_response.status_code != 200:
+            print(f"Error fetching all cards for initial provisioning: {cards_response.status_code}")
+            all_available_cards = []
+        else:
+            all_available_cards = cards_response.json
+
+    cantrips_pool = [card for card in all_available_cards if card.get('type') == 'Cantrip']
+    leveled_spells_pool = [card for card in all_available_cards if card.get('type') != 'Cantrip']
+
+    # 1. 3 random Cantrips
+    if len(cantrips_pool) >= 3:
+        initial_unlocked_collection_ids.extend([card['id'] for card in random.sample(cantrips_pool, 3)])
+    elif cantrips_pool:
+        initial_unlocked_collection_ids.extend([card['id'] for card in cantrips_pool])
+
+    # 2. Specific leveled spells: Burning Hands, Cure Wounds
+    burning_hands = next((card for card in leveled_spells_pool if card.get('name') == 'Burning Hands'), None)
+    cure_wounds = next((card for card in leveled_spells_pool if card.get('name') == 'Cure Wounds'), None)
+
+    if burning_hands:
+        initial_unlocked_collection_ids.append(burning_hands['id'])
+    if cure_wounds:
+        initial_unlocked_collection_ids.append(cure_wounds['id'])
+
+    # No de-duplication here, as per requirement to track all copies
+    # initial_unlocked_collection_ids = list(dict.fromkeys(initial_unlocked_collection_ids))
+
+    print(f"Initial cards for new player {player_id}: {initial_unlocked_collection_ids}")
+
+    # New accounts start with no active deck, but initial unlocked cards
+    success = save_player_deck(player_id, [], initial_unlocked_collection_ids, 1, 0, 0, 0, hashed_password)
 
     if success:
         return jsonify({"message": "Player account created successfully"}), 201
@@ -338,7 +414,8 @@ def login():
 
     return jsonify({
         "message": "Login successful",
-        "cards": player_data['deck'],
+        "active_deck_instances": player_data['active_deck_instances'],
+        "unlocked_collection_ids": player_data['unlocked_collection_ids'],
         "character_level": player_data['character_level'],
         "wis_mod": player_data['wis_mod'],
         "int_mod": player_data['int_mod'],
@@ -350,15 +427,16 @@ def login():
 def save_deck():
     data = request.json
     player_id = data.get('player_id')
-    password = data.get('password')
-    cards = data.get('cards')
+    password = data.get('password')  # For re-validation
+    active_deck_instances = data.get('active_deck_instances')
+    unlocked_collection_ids = data.get('unlocked_collection_ids')  # Now accepts list with duplicates
     character_level = data.get('character_level')
     wis_mod = data.get('wis_mod')
     int_mod = data.get('int_mod')
     cha_mod = data.get('cha_mod')
 
-    if not all([player_id, password, cards is not None, character_level is not None, wis_mod is not None,
-                int_mod is not None, cha_mod is not None]):
+    if not all([player_id, password, active_deck_instances is not None, unlocked_collection_ids is not None,
+                character_level is not None, wis_mod is not None, int_mod is not None, cha_mod is not None]):
         return jsonify({"error": "Missing required data"}), 400
 
     player_data = get_player_deck(player_id)
@@ -369,12 +447,138 @@ def save_deck():
     if hashed_password != player_data.get('hashed_password'):
         return jsonify({"error": "Incorrect password"}), 401
 
-    success = save_player_deck(player_id, cards, character_level, wis_mod, int_mod, cha_mod, hashed_password)
+    success = save_player_deck(player_id, active_deck_instances, unlocked_collection_ids,
+                               character_level, wis_mod, int_mod, cha_mod, hashed_password)
 
     if success:
         return jsonify({"message": "Deck and stats saved successfully"}), 200
     else:
         return jsonify({"error": "Failed to save deck"}), 500
+
+
+@app.route('/api/deck/open_booster', methods=['POST'])
+def open_booster_pack():
+    data = request.json
+    player_id = data.get('player_id')
+    password = data.get('password')  # For re-validation
+
+    if not player_id or not password:
+        return jsonify({"error": "Missing player ID or password"}), 400
+
+    player_data = get_player_deck(player_id)
+    if not player_data:
+        return jsonify({"error": "Player not found"}), 404
+
+    hashed_password = hash_password(password)
+    if hashed_password != player_data.get('hashed_password'):
+        return jsonify({"error": "Incorrect password"}), 401
+
+    # Initialize current_unlocked_ids as a list (allows duplicates)
+    current_unlocked_ids = list(player_data['unlocked_collection_ids'])
+
+    # Fetch all cards using app.test_client
+    with app.test_client() as client:
+        cards_response = client.get('/api/cards')
+        if cards_response.status_code != 200:
+            print(f"Error fetching all cards for booster pack: {cards_response.status_code}")
+            all_available_cards = []
+        else:
+            all_available_cards = cards_response.json
+
+    # Categorize all cards for easier selection
+    # Ensure rarity is consistently uppercase for lookup
+    all_cantrips = {
+        rarity.upper(): [c for c in all_available_cards if
+                         c['type'] == 'Cantrip' and c['rarity'].upper() == rarity.upper()]
+        for rarity in ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY']
+    }
+    all_leveled_spells = {
+        rarity.upper(): [c for c in all_available_cards if
+                         c['type'] != 'Cantrip' and c['rarity'].upper() == rarity.upper()]
+        for rarity in ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY']
+    }
+
+    # --- D100 Roll for Pack Quality ---
+    roll = random.randint(1, 100)
+    pack_type = ""
+    pack_contents_definition = []
+
+    if 1 <= roll <= 50:
+        pack_type = "Common Pack"
+        pack_contents_definition = [
+            {"type": "Cantrip", "rarity": "Common"},
+            {"type": "Cantrip", "rarity": "Uncommon"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+        ]
+    elif 51 <= roll <= 85:
+        pack_type = "Uncommon Pack"
+        pack_contents_definition = [
+            {"type": "Cantrip", "rarity": "Uncommon"},
+            {"type": "Cantrip", "rarity": "Rare"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Uncommon"},
+        ]
+    elif 86 <= roll <= 99:
+        pack_type = "Rare Pack"
+        pack_contents_definition = [
+            {"type": "Cantrip", "rarity": "Rare"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Uncommon"},
+            {"type": "Leveled Spell", "rarity": "Rare"},
+        ]
+    else:  # roll == 100
+        pack_type = "Legendary Pack"
+        pack_contents_definition = [
+            {"type": "Leveled Spell", "rarity": "Common"},
+            {"type": "Leveled Spell", "rarity": "Uncommon"},
+            {"type": "Leveled Spell", "rarity": "Uncommon"},
+            {"type": "Leveled Spell", "rarity": "Rare"},
+            {"type": "Leveled Spell", "rarity": "Legendary"},
+        ]
+
+    new_cards_acquired = []
+
+    for slot_def in pack_contents_definition:
+        target_type = slot_def['type']
+        target_rarity = slot_def['rarity'].upper()
+
+        pool = []
+        if target_type == "Cantrip":
+            pool = all_cantrips.get(target_rarity, [])
+        else:  # Leveled Spell
+            pool = all_leveled_spells.get(target_rarity, [])
+
+        if pool:
+            chosen_card = random.choice(pool)  # Pick a random card from the filtered pool
+            new_cards_acquired.append(chosen_card)
+            # Add its ID to the player's unlocked collection. This list now allows duplicates.
+            current_unlocked_ids.append(chosen_card['id'])
+        else:
+            print(
+                f"WARNING: No cards found for type '{target_type}' and rarity '{target_rarity}' for pack {pack_type}. Check CSV data.")
+
+    # updated_unlocked_collection_ids is now current_unlocked_ids (which contains duplicates)
+    updated_unlocked_collection_ids = current_unlocked_ids
+
+    # Save the updated unlocked cards list back to the player's profile
+    success = save_player_deck(player_id, player_data['active_deck_instances'],
+                               updated_unlocked_collection_ids,
+                               player_data['character_level'], player_data['wis_mod'],
+                               player_data['int_mod'], player_data['cha_mod'], hashed_password)
+
+    if success:
+        return jsonify({
+            "message": f"Successfully opened a {pack_type}! You acquired {len(new_cards_acquired)} cards.",
+            "pack_type": pack_type,
+            "new_cards": new_cards_acquired,
+            "updated_unlocked_collection_ids": updated_unlocked_collection_ids
+        }), 200
+    else:
+        return jsonify({"error": "Failed to open booster pack and save new cards."}), 500
 
 
 @app.route('/api/card_used', methods=['POST'])
@@ -412,8 +616,9 @@ if __name__ == '__main__':
     print("  GET /api/cards - Get all available cards")
     print("  GET /api/status - Check backend status")
     print("  POST /api/calculate_deck_size - Calculate max deck size")
-    print("  POST /api/deck/create - Create player account")
-    print("  POST /api/deck/login - Authenticate and retrieve player deck")
-    print("  POST /api/deck/save - Save the player deck")
+    print("  POST /api/deck/create - Create player account (with initial cards)")
+    print("  POST /api/deck/login - Authenticate and retrieve player deck and unlocked cards")
+    print("  POST /api/deck/save - Save the player deck and unlocked cards")
+    print("  POST /api/deck/open_booster - Open a booster pack to unlock new cards")
     print("  POST /api/card_used - Log a card usage event")
     app.run(host='0.0.0.0', port=5000)

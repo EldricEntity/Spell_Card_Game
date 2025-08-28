@@ -72,7 +72,10 @@ def fetch_cards_from_csv():
                     "description": str(row['DESCRIPTION']),
                     "type": str(row['TYPE']),
                     "rarity": str(row['RARITY']),
-                    "default_uses_per_rest": int(float(row['DEFAULT_USES_PER_REST']))
+                    "default_uses_per_rest": int(float(row['DEFAULT_USES_PER_REST'])),
+                    # --- NEW FIELDS ---
+                    "backlasheffect": str(row.get('BACKLASHEFFECT', '')),  # Use .get() for robustness
+                    "effect": str(row.get('EFFECT', ''))
                 }
                 validated_cards.append(card)
             except KeyError as ke:
@@ -117,34 +120,43 @@ def init_db_pool():
     try:
         with contextlib.closing(db_pool.acquire()) as conn:
             with contextlib.closing(conn.cursor()) as cursor:
-                # Check and create CARDS table
+                # --- CARDS table management ---
                 cursor.execute("SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = 'CARDS'")
-                if not cursor.fetchone()[0] > 0:
-                    print("CARDS table not found. Creating and populating...")
-                    cursor.execute("""
-                        CREATE TABLE CARDS (
-                            ID VARCHAR2(64) PRIMARY KEY,
-                            NAME VARCHAR2(100) NOT NULL,
-                            TYPE VARCHAR2(50) NOT NULL,
-                            DESCRIPTION VARCHAR2(500),
-                            RARITY VARCHAR2(50),
-                            DEFAULT_USES_PER_REST NUMBER,
-                            IMAGE_FILENAME VARCHAR2(100)
-                        )
-                    """)
+                if cursor.fetchone()[0] > 0:
+                    print("CARDS table found. Dropping existing table for schema update...")
+                    cursor.execute("DROP TABLE CARDS")
                     conn.commit()
-                    cards_to_insert = fetch_cards_from_csv()
-                    if cards_to_insert:
-                        print("Populating CARDS table from CSV data.")
-                        cursor.executemany("""
-                            INSERT INTO CARDS (ID, NAME, IMAGE_FILENAME, DESCRIPTION, TYPE, RARITY, DEFAULT_USES_PER_REST)
-                            VALUES (:id, :name, :image_filename, :description, :type, :rarity, :default_uses_per_rest)
-                        """, cards_to_insert)
-                        conn.commit()
-                    else:
-                        print("WARNING: Could not populate CARDS table from CSV. It is empty.")
 
-                # --- FIX: Explicitly drop and re-create PLAYER_DECKS table for consistent schema ---
+                print("Creating CARDS table with new schema (including BACKLASHEFFECT and EFFECT)...")
+                cursor.execute("""
+                    CREATE TABLE CARDS (
+                        ID VARCHAR2(64) PRIMARY KEY,
+                        NAME VARCHAR2(100) NOT NULL,
+                        TYPE VARCHAR2(50) NOT NULL,
+                        DESCRIPTION VARCHAR2(500),
+                        RARITY VARCHAR2(50),
+                        DEFAULT_USES_PER_REST NUMBER,
+                        IMAGE_FILENAME VARCHAR2(100),
+                        -- --- NEW COLUMNS ---
+                        BACKLASHEFFECT VARCHAR2(500),
+                        EFFECT VARCHAR2(500)
+                    )
+                """)
+                conn.commit()
+                print("CARDS table created successfully with new schema.")
+
+                cards_to_insert = fetch_cards_from_csv()
+                if cards_to_insert:
+                    print("Populating CARDS table from CSV data.")
+                    cursor.executemany("""
+                        INSERT INTO CARDS (ID, NAME, IMAGE_FILENAME, DESCRIPTION, TYPE, RARITY, DEFAULT_USES_PER_REST, BACKLASHEFFECT, EFFECT)
+                        VALUES (:id, :name, :image_filename, :description, :type, :rarity, :default_uses_per_rest, :backlasheffect, :effect)
+                    """, cards_to_insert)
+                    conn.commit()
+                else:
+                    print("WARNING: Could not populate CARDS table from CSV. It is empty.")
+
+                # --- PLAYER_DECKS table management ---
                 cursor.execute("SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = 'PLAYER_DECKS'")
                 if cursor.fetchone()[0] > 0:
                     print("PLAYER_DECKS table found. Dropping existing table for schema update...")
@@ -287,7 +299,8 @@ def get_cards():
     try:
         with contextlib.closing(get_db_connection()) as connection:
             with contextlib.closing(connection.cursor()) as cursor:
-                sql = "SELECT ID, NAME, TYPE, DESCRIPTION, RARITY, DEFAULT_USES_PER_REST, IMAGE_FILENAME FROM CARDS"
+                # --- Updated SELECT statement to include new columns ---
+                sql = "SELECT ID, NAME, TYPE, DESCRIPTION, RARITY, DEFAULT_USES_PER_REST, IMAGE_FILENAME, BACKLASHEFFECT, EFFECT FROM CARDS"
                 cursor.execute(sql)
                 rows = cursor.fetchall()
                 cards = []
@@ -299,7 +312,10 @@ def get_cards():
                         "description": row[3],
                         "rarity": row[4],
                         "default_uses_per_rest": row[5],
-                        "image_filename": row[6]
+                        "image_filename": row[6],
+                        # --- NEW FIELDS IN RESPONSE ---
+                        "backlash_effect": row[7],
+                        "effect": row[8]
                     })
 
                 # --- Sorting Logic ---

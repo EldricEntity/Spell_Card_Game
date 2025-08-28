@@ -285,6 +285,15 @@ const AppStyles = `
         margin-bottom: 1rem;
         border: 1px solid #8c6e4e; /* Gold frame for image */
     }
+    
+    .card-backlash {
+        font-family: 'Merriweather', serif;
+        font-size: 0.85rem;
+        color: #a33b3b; /* Red color for backlash effect */
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
 
     .card-name {
         font-family: 'Cinzel', serif;
@@ -305,7 +314,14 @@ const AppStyles = `
         font-size: 0.9rem;
         color: #4a3e3c;
         flex-grow: 1;
-        margin-bottom: 1rem;
+        margin-bottom: 0.7rem; /* Adjusted margin */
+    }
+
+    .card-effect {
+        font-size: 0.9rem;
+        color: #4a6d8c; /* Blue color for effect */
+        margin-bottom: 0.7rem; /* Adjusted margin */
+        font-style: italic;
     }
 
     .card-meta, .card-uses {
@@ -911,8 +927,14 @@ function App() {
                                                 className="card-image"
                                                 onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
                                             />
+                                            {card.backlash_effect && (
+                                                <p className="card-backlash">Backlash: {card.backlash_effect}</p>
+                                            )}
                                             <h3 className="card-name">{card.name} ({card.type})</h3>
                                             <p className="card-description">{card.description}</p>
+                                            {card.effect && (
+                                                <p className="card-effect">Effect: {card.effect}</p>
+                                            )}
                                             <p className="card-meta">Rarity: <span>{card.rarity}</span></p>
                                             <p className="card-meta">Owned Copies: <span>{card.owned_copies}</span></p>
                                             <button
@@ -976,8 +998,14 @@ function App() {
                                                     className="card-image"
                                                     onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/100x150/cccccc/333333?text=Image%20Error"; }}
                                                 />
+                                                {card.backlash_effect && (
+                                                    <p className="card-backlash">Backlash: {card.backlash_effect}</p>
+                                                )}
                                                 <h3 className="card-name">{card.name} ({card.type})</h3>
                                                 <p className="card-description">{card.description}</p>
+                                                {card.effect && (
+                                                    <p className="card-effect">Effect: {card.effect}</p>
+                                                )}
                                                 <p className="card-meta">Rarity: <span>{card.rarity}</span></p>
                                                 <p className="card-uses">Uses Left: {card.current_uses}/{card.default_uses_per_rest}</p>
                                                 <div className="card-actions">

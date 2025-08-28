@@ -1,4 +1,4 @@
-Spell ID,name,type,description,rarity,BacklashDamage,Effect,default_uses_per_rest,image_filename
+Spell ID,name,type,description,rarity,BacklashEffect,Effect,default_uses_per_rest,image_filename
 C001,Minor Illusion,Cantrip,Creates a sound or an image of an object within range.,Common,1 psychic,N/A,2,spell_placeholder.jpg
 C002,Firebolt,Cantrip,Hurl a mote of fire at a creature or object.,Common,1d4 Fire,1d10 Fire Add 1D10 every 5 levels,2,spell_placeholder.jpg
 C003,Acid Splash,Cantrip,Hurl a bubble of acid,Common,1d4 Acid,(1d6)  Acid,2,spell_placeholder.jpg
@@ -40,11 +40,11 @@ L003,Animal Friendship,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
 L004,Armor of Agathys,Leveled,,Uncommon,2 Cold,N/A,1,spell_placeholder.jpg
 L005,Bane,Leveled,,Common,2 Force,N/A,1,spell_placeholder.jpg
 L006,Bless,Leveled,,Common,2 Radiant,N/A,1,spell_placeholder.jpg
-L007,Burning Hands,Leveled,,Uncommon,1d6 Fire,,1,spell_placeholder.jpg
+L007,Burning Hands,Leveled,,Uncommon,2d6 Fire,,1,spell_placeholder.jpg
 L008,Catapult,Leveled,,Uncommon,1d6 Force,,1,spell_placeholder.jpg
 L009,Ceremony,Leveled,,Common,1d4 Radiant,N/A,1,spell_placeholder.jpg
 L010,Chaos Bolt,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
-L011,Charm Person,Leveled,,Common,2 Psychic,N/A,1,spell_placeholder.jpg
+L011,Charm Person,Leveled,,Common,1d6 Psychic,N/A,1,spell_placeholder.jpg
 L012,Chromatic Orb,Leveled,,Rare,1d8 Force,,1,spell_placeholder.jpg
 L013,Color Spray,Leveled,,Common,2 Poison,N/A,1,spell_placeholder.jpg
 L014,Command,Leveled,,Uncommon,1d6 Psychic,N/A,1,spell_placeholder.jpg
@@ -67,10 +67,10 @@ L030,Fog Cloud,Leveled,,Common,2 Poison,,1,spell_placeholder.jpg
 L031,Find Familiar,Leveled,,Rare,2 Psychic,,1,spell_placeholder.jpg
 L032,Frost Fingers,Leveled,,Uncommon,1d6 Cold,,1,spell_placeholder.jpg
 L033,Goodberry,Leveled,,Uncommon,1 Poison,,1,spell_placeholder.jpg
-L034,Grease,Leveled,,Common,2 Force,,1,spell_placeholder.jpg
+L034,Grease,Leveled,,Common,6 Force,,1,spell_placeholder.jpg
 L035,Guiding Bolt,Leveled,,Rare,1d8 Radiant,,1,spell_placeholder.jpg
 L036,Hail of Thorns,Leveled,,Common,1d6 Piercing,,1,spell_placeholder.jpg
-L037,Healing Word,Leveled,,Uncommon,2 Force,,1,spell_placeholder.jpg
+L037,Healing Word,Leveled,,Uncommon,5 Force,,1,spell_placeholder.jpg
 L038,Hellish Rebuke,Leveled,,Rare,1d8 Fire,,1,spell_placeholder.jpg
 L039,Herosim,Leveled,,Uncommon,3 Radiant,,1,spell_placeholder.jpg
 L040,Hex,Leveled,,Common,1d6 Necrotic,,1,spell_placeholder.jpg
@@ -211,32 +211,220 @@ L232,Intellect Fortress,Leveled,,Rare,1d12 Psychic,,1,spell_placeholder.jpg
 L233,Leomund's Tiny Hut,Leveled,,Rare,8 Force,,1,spell_placeholder.jpg
 L234,Lightning Arrow,Leveled,Your ranged weapon mimics a Lightning Bolt  before attacking,Rare,2d10 Lightning,,1,spell_placeholder.jpg
 L235,Lightning Bolt,Leveled,,Legendary,2d12 Lightning,,1,spell_placeholder.jpg
-L236,Magic Circle,Leveled,,Rare,,,1,spell_placeholder.jpg
-L237,Major Image,Leveled,,Rare,,,1,spell_placeholder.jpg
-L238, Mass Healing Word,Leveled,,Rare,,,1,spell_placeholder.jpg
-L239,Meld into Stone,Leveled,,Common,,,1,spell_placeholder.jpg
-L240,Melf's Minute Meteors,Leveled,,Rare,,,1,spell_placeholder.jpg
-L241,Phantom Steed ,Leveled,,Common,,,1,spell_placeholder.jpg
-L242,Plant Growth,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L243,Protection from Energy,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L244,Remove Curse,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L245,Sending,Leveled,,Rare,,,1,spell_placeholder.jpg
-L246,Sleet Storm,Leveled,,Rare,,,1,spell_placeholder.jpg
-L247,Slow,Leveled,,Legendary,,,1,spell_placeholder.jpg
-L248,Speak with Plants,Leveled,,Common,,,1,spell_placeholder.jpg
-L249,Spirit Guardians,Leveled,,Legendary,4d8 Radiant,,1,spell_placeholder.jpg
-L250,Stinking Cloud,Leveled,,Rare,,,1,spell_placeholder.jpg
-L251,Summon Fey,Leveled,,Rare,,,1,spell_placeholder.jpg
-L252, Summon Lesser Demons,Leveled,,Rare,,,1,spell_placeholder.jpg
-L253, Shummon Shadowspawn,Leveled,,Rare,,,1,spell_placeholder.jpg
-L254,Thunder Step,Leveled,,Rare,,,1,spell_placeholder.jpg
-L255,Tidal Wave,Leveled,,Rare,,,1,spell_placeholder.jpg
-L256,Tiny Servant,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L257, Tongues,Leveled,,Common,,,1,spell_placeholder.jpg
-L258,Wall of Sand,Leveled,,Common,,,1,spell_placeholder.jpg
-L259,Wall of Water,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L260,Water Breathing,Leveled,,Common,,,1,spell_placeholder.jpg
-L261,Water Walk,Leveled,,Common,,,1,spell_placeholder.jpg
-L262,Wind Wall,Leveled,,Uncommon,,,1,spell_placeholder.jpg
-L301,,Leveled,,,,,1,spell_placeholder.jpg
-L302,,Leveled,,,,,1,spell_placeholder.jpg
+L236,Magic Circle,Leveled,,Rare,2d12 Radiant,,1,spell_placeholder.jpg
+L237,Major Image,Leveled,,Rare,2d8 Psychic,,1,spell_placeholder.jpg
+L238, Mass Healing Word,Leveled,,Rare,3d6 Radiant,,1,spell_placeholder.jpg
+L239,Meld into Stone,Leveled,,Common,2d4 Force,,1,spell_placeholder.jpg
+L240,Melf's Minute Meteors,Leveled,,Rare,18 Fire,,1,spell_placeholder.jpg
+L241,Phantom Steed ,Leveled,,Common,2d4 Force,,1,spell_placeholder.jpg
+L242,Plant Growth,Leveled,,Uncommon,3d6 Radiant,,1,spell_placeholder.jpg
+L243,Protection from Energy,Leveled,,Uncommon,3d4 Force,,1,spell_placeholder.jpg
+L244,Remove Curse,Leveled,,Uncommon,3d6 Necrotic,,1,spell_placeholder.jpg
+L245,Sending,Leveled,,Rare,2d6 Psychic,,1,spell_placeholder.jpg
+L246,Sleet Storm,Leveled,,Rare,4d4 Cold,,1,spell_placeholder.jpg
+L247,Slow,Leveled,,Legendary,Roll Against Spell DC/Take Effect,,1,spell_placeholder.jpg
+L248,Speak with Plants,Leveled,,Common,2d6 Poison,,1,spell_placeholder.jpg
+L249,Spirit Guardians,Leveled,,Legendary,3d12 Radiant,,1,spell_placeholder.jpg
+L250,Stinking Cloud,Leveled,,Rare,3d6 Poison,,1,spell_placeholder.jpg
+L251,Summon Fey,Leveled,,Rare,3d10 Psychic,,1,spell_placeholder.jpg
+L252, Summon Lesser Demons,Leveled,,Rare,3d8 Necrotic,,1,spell_placeholder.jpg
+L253, Shummon Shadowspawn,Leveled,,Rare,3d10 Necrotic,,1,spell_placeholder.jpg
+L254,Thunder Step,Leveled,,Rare,18 Thunder Damage,,1,spell_placeholder.jpg
+L255,Tidal Wave,Leveled,,Rare,4d4 Cold,,1,spell_placeholder.jpg
+L256,Tiny Servant,Leveled,,Uncommon,2d8 Force,,1,spell_placeholder.jpg
+L257, Tongues,Leveled,,Common,2d6 Psychic,,1,spell_placeholder.jpg
+L258,Wall of Sand,Leveled,,Common,Blindness for the spells duration,,1,spell_placeholder.jpg
+L259,Wall of Water,Leveled,,Uncommon,12 Cold Damage,,1,spell_placeholder.jpg
+L260,Water Breathing,Leveled,,Common,2d8 Bleed,,1,spell_placeholder.jpg
+L261,Water Walk,Leveled,,Common,2d6 Force,,1,spell_placeholder.jpg
+L262,Wind Wall,Leveled,,Uncommon,3d6 Force,,1,spell_placeholder.jpg
+L301,Arcane Eye,Leveled,,Rare,3d6 Psychic,,1,spell_placeholder.jpg
+L302,Aura of Life,Leveled,,Rare,17 Radiant,,1,spell_placeholder.jpg
+L303,Aura of Purity,Leveled,,Rare,18 Radiant,,,
+L304,Banishment,Leveled,,Rare,3d10 Force,,,
+L305,Charm Monster,Leveled,,Rare,3d6 Psychic,,,
+L306,Compulsion,Leveled,,Rare,2d8 Psychic,,,
+L307,Confusion,Leveled,,Rare,3d8 Psychic,,,
+L308,Conjure Minor Elemental,Leveled,,Rare,3d10 (Element Chosen),,,
+L309,Conjure Woodland Being,Leveled,,Rare,4d4 Psychic,,,
+L310,Control Water,Leveled,,Rare,3d10 Cold,,,
+L311, Death Ward,Leveled,,Rare,Gain 2 Points of Exhaustion,,,
+L312,Dimension Door,Leveled,,Rare,15 Force,,,
+L313, Divination,Leveled,,Rare,3d6 Psychic,,,
+L314,Dominate Beast,Leveled,,Rare,2d12 Psychic,,,
+L315,Elemental Bane,Leveled,,Rare,4d4 (Chosen Element),,,
+L316,Evard's Black Tentecales,Leveled,,Rare,20 Necrotic,,,
+L317,Fabricate,Leveled,,Uncommon,14 Force,,,
+L318,Find Greater Steed,Leveled,,Rare,18 Force,,,
+L319,Fire Shield,Leveled,,Rare,20 Fire,,,
+L320,Freedom of Movement,Leveled,,Rare,4d4 Force,,,
+L321,Galder's Speedy Courier,Leveled,,Uncommon,12 Force,,,
+L322,Gate Seal,Leveled,,Rare,18 Radiant,,,
+L323,Giant Insect,Leveled,,Rare,20 Poison,,,
+L324,Grasping Vine,Leveled,,Uncommon,14 Force,,,
+L325,Gravity Sinkhole,Leveled,,Rare,20 Force,,,
+L326,Greater Invisibility,Leveled,,Rare,21 Psychic,,,
+L327,Guardian of Faith,Leveled,,Rare,2d12 Radiant,,,
+L328,Guardian of Nature,Leveled,,Rare,17 Force,,,
+L329,Hallucinatory Terrain,Leveled,,Rare,15 Psychic,,,
+L330,Ice Storm,Leveled,,Rare,3d10 Cold,,,
+L331,Locate Creature,Leveled,,Uncommon,3d6 Psychic,,,
+L332,Phantasmal Killer,Leveled,,Rare,4d6 Psychic,,,
+L333,Polymorph,Leveled,,Rare,20 Force,,,
+L334,Raulothim's Psychic Lance,Leveled,,Rare,3d10 Psychic,,,
+L335,Sickening Radiance,Leveled,,Rare,4d6 Necrotic,,,
+L336,Staggering Smite,Leveled,,Rare,18 Force,,,
+L337,Stone Shape,Leveled,,Uncommon,14 Force,,,
+L338,Stone Skin,Leveled,,Rare,4d4 Bludgeoning,,,
+L339,Storm Sphere,Leveled,,Rare,4d6 Lightning,,,
+L340,Summon Aberration,Leveled,,Rare,3d10 Psychic,,,
+L341,Summon Construct,Leveled,,Rare,2d12 Force,,,
+L342,Summon Elemental,Leveled,,Rare,3d10 (Elemental Summoned),,,
+L343,Summon Greater Demon,Leveled,,Rare,4d6 Necrotic,,,
+L344,Wall of Fire,Leveled,,Rare,20 Fire,,,
+L345,Watery Sphere,Leveled,,Rare,18 Cold,,,
+L401,Animate objects,Leveled,,Legendary,4d12 Force,,,
+L402,Antilife Shell,Leveled,,Rare,3d10 Necrotic,,,
+L403,Awaken,Leveled,,Rare,4d4 PSychic,,,
+L404,Banishing SMite,Leveled,,Rare,3d10 Force,,,
+L405,Bigby's Hand,Leveled,,Legendary,4d12 Force,,,
+L406,Circle of Power,Leveled,,Rare,3d10 Radiant,,,
+L407,Cloudkill,Leveled,,Legendary,4d12 Poison,,,
+L408,Commune,Leveled,,Rare,15 Psychic,,,
+L409,Commune with Nature,Leveled,,Rare,15 Psychic,,,
+L410,Cone of Cold,Leveled,,Legendary,4d12 Cold,,,
+L411,Conjure Elemental,Leveled,,Legendary,4d10 (Chosen Elemental),,,
+L412,Conjure Volley,Leveled,,Rare,3d8 Force,,,
+L413,Contact other Plane,Leveled,,Rare,2d12 Psychic,,,
+L414,Control Winds,Leveled,,Rare,18 Force,,,
+L415,Creation,Leveled,,Rare,4d4 Force,,,
+L416,Dawn,Leveled,,Rare,3d10 Radiant,,,
+L417,Destructive Wave,Leveled,,Legendary,4d12 Radiant,,,
+L418,Dispel Evil and Good,Leveled,,Rare,18 Radiant,,,
+L419,Dominate Person,Leveled,,Legendary,6d6 Psychic,,,
+L420,Dream,Leveled,,Rare,4d4 PSychic,,,
+L421,Far step,Leveled,,Rare,2d12 Force,,,
+L422,Flame Strike,Leveled,,Rare,3d8 Fire,,,
+L423,Greator Restoration,Leveled,,Rare,4d4 Radiant,,,
+L424,Hallow,Leveled,,Rare,18 Radiant,,,
+L425,Holy Weapon,Leveled,,Legendary,4d10 Radiant,,,
+L426,Immolation,Leveled,,Rare,20 Fire,,,
+L427,INfernal Calling,Leveled,,Rare,3d10 Necrotic,,,
+L428,Insect Plague,Leveled,,Rare,3d8 Poison,,,
+L429,Legend Lore,Leveled,,Rare,15 Psychic,,,
+L430,Maelstrom,Leveled,,Rare,3d10 Cold,,,
+L431,Mass Cure Wounds,Leveled,,Rare,1d4 Necrotic for 1minute,,,
+L432,Mislead,Leveled,,Rare,2d12 Psychic,,,
+L433,Modify Memory,Leveled,,Legendary,24 Psychic,,,
+L434,Passwall,Leveled,,Rare,4d4 Force,,,
+L435,Planar Binding,Leveled,,Rare,20 Force,,,
+L436,Reincarnation,Leveled,,Rare,2d12 Necrotic,,,
+L437,Scrying,Leveled,,Rare,4d4 Psychic,,,
+L438,Skill Empowerment,Leveled,,Rare,17 Force,,,
+L439,Steel Wind Strike,Leveled,,Rare,3d12 Force,,,
+L440,Summon Celestial,Leveled,,Rare,20 Radiant,,,
+L441,Summon Draconic Spirit,Leveled,,Legendary,4d12 (Element),,,
+L442,Swift Quiver,Leveled,,Rare,2d12 Force,,,
+L443,Telekinesis,Leveled,,Rare,3d10 Force,,,
+L444,Teleport Circle,Leveled,,Rare,18 Force,,,
+L445,Transmute Rock,Leveled,,Rare,2d12 Force,,,
+L446,Tree Stride,Leveled,,Rare,17 Force,,,
+L447,Wall of Force,Leveled,,Legendary,25 Force,,,
+L448,Wall of Light,Leveled,,Rare,20 Radiant,,,
+L449,Wall of Stone,Leveled,,Rare,18 Thunder,,,
+L450,Wrath of Nature,Leveled,,Rare,3d10 Force,,,
+L501,Arcane Gate,Leveled,,,,,,
+L502,Blade Barrier,Leveled,,,,,,
+L503,Bones of the Earth,Leveled,,,,,,
+L504,Chain Lightning,Leveled,,,,,,
+L505,Conjure Fey,Leveled,,,,,,
+L506,Contingency,Leveled,,,,,,
+L507,Disintegrate,Leveled,,,,,,
+L508,Drawmij’s Instant Summons,Leveled,,,,,,
+L509,Druid grove,Leveled,,,,,,
+L510,Flesh to Stone,Leveled,,,,,,
+L511,Forbiddance,Leveled,,,,,,
+L512,Guards and Wards,Leveled,,,,,,
+L513,Heal,Leveled,,,,,,
+L514,Heroes' Feast,Leveled,,,,,,
+L515,Investiture of Flame,Leveled,,,,,,
+L516,Investiture of Ice,Leveled,,,,,,
+L517,Investiture of Stone,Leveled,,,,,,
+L518,Investiture of Wind,Leveled,,,,,,
+L519,Mass Suggestion,Leveled,,,,,,
+L520,Mental Prison,Leveled,,,,,,
+L521,Move Earth,Leveled,,,,,,
+L522,Planar Ally,Leveled,,,,,,
+L523,Scatter,Leveled,,,,,,
+L524,Summon Fiend,Leveled,,,,,,
+L525,Sunbeam,Leveled,,,,,,
+L526,True seeing,Leveled,,,,,,
+L527,Wall of Ice,Leveled,,,,,,
+L528,Wind Walk,Leveled,,,,,,
+L529,Word Recall,Leveled,,,,,,
+L601,,Leveled,,,,,,
+L601,,Leveled,,,,,,
+L602,,Leveled,,,,,,
+L603,,Leveled,,,,,,
+L604,,Leveled,,,,,,
+L605,,Leveled,,,,,,
+L606,,Leveled,,,,,,
+L607,,Leveled,,,,,,
+L608,,Leveled,,,,,,
+L609,,Leveled,,,,,,
+L610,,Leveled,,,,,,
+L611,,Leveled,,,,,,
+L612,,Leveled,,,,,,
+L613,,Leveled,,,,,,
+L614,,Leveled,,,,,,
+L615,,Leveled,,,,,,
+L616,,Leveled,,,,,,
+L617,,Leveled,,,,,,
+L618,,Leveled,,,,,,
+L619,,Leveled,,,,,,
+L620,,Leveled,,,,,,
+L621,,Leveled,,,,,,
+L622,,Leveled,,,,,,
+L623,,Leveled,,,,,,
+L624,,Leveled,,,,,,
+L625,,Leveled,,,,,,
+L626,,Leveled,,,,,,
+L627,,Leveled,,,,,,
+L628,,Leveled,,,,,,
+L629,,Leveled,,,,,,
+L630,,Leveled,,,,,,
+L631,,Leveled,,,,,,
+L632,,Leveled,,,,,,
+L633,,Leveled,,,,,,
+L634,,Leveled,,,,,,
+L635,,Leveled,,,,,,
+L636,,Leveled,,,,,,
+L637,,Leveled,,,,,,
+L638,,Leveled,,,,,,
+L639,,Leveled,,,,,,
+L640,,Leveled,,,,,,
+L641,,Leveled,,,,,,
+L642,,Leveled,,,,,,
+L643,,Leveled,,,,,,
+L644,,Leveled,,,,,,
+L645,,Leveled,,,,,,
+L646,,Leveled,,,,,,
+L647,,Leveled,,,,,,
+L648,,Leveled,,,,,,
+L649,,Leveled,,,,,,
+L650,,Leveled,,,,,,
+L651,,Leveled,,,,,,
+L652,,Leveled,,,,,,
+L653,,Leveled,,,,,,
+L654,,Leveled,,,,,,
+L655,,Leveled,,,,,,
+L656,,Leveled,,,,,,
+L657,,Leveled,,,,,,
+L658,,Leveled,,,,,,
+L659,,Leveled,,,,,,
+L660,,Leveled,,,,,,
+L661,,Leveled,,,,,,
+L662,,Leveled,,,,,,
+L663,,Leveled,,,,,,
+L664,,Leveled,,,,,,
+L665,,Leveled,,,,,,

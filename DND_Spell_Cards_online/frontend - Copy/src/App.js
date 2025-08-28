@@ -12,7 +12,7 @@ const AppStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:wght@400;700&display=swap');
 
     body {
-        background-color: #3b2f2f; /* Dark brown background, like a closed grimoire */
+        background-color: #d6d096ff; /* Dark brown background, like a closed grimoire */
         font-family: 'Merriweather', serif; /* Readable serif for body text */
         color: #5a4b4b; /* Darker, faded text */
         margin: 0;
@@ -28,11 +28,10 @@ const AppStyles = `
         padding: 1.5rem; /* Increased padding */
         box-sizing: border-box;
         /* --- NEW WOODEN FLOOR TEXTURE --- */
-        background-image: url('/images/wooden-floor.jpg'); 
         background-size: cover;
         background-position: center; /* Center the background image */
         background-attachment: fixed;
-        border: 10px solid #4a3e3c; /* Thick, dark border for the "book" effect */
+        border: 10px solid #705b57ff; /* Thick, dark border for the "book" effect */
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Deep shadow for depth */
         margin: 1rem; /* Margin to show body background */
         border-radius: 1rem; /* Slightly rounded edges for the book */

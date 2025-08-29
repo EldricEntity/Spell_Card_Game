@@ -12,7 +12,7 @@ const AppStyles = `
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Merriweather:wght@400;700&display=swap');
 
     body {
-        background-color: #d6d096ff; /* Dark brown background, like a closed grimoire */
+        background-color: #cebe9bff; /* Dark brown background, like a closed grimoire */
         font-family: 'Merriweather', serif; /* Readable serif for body text */
         color: #5a4b4b; /* Darker, faded text */
         margin: 0;
